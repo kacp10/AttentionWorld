@@ -1,0 +1,23 @@
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Unity
+[Ll]ibrary/
+[Ll]ogs/
+[Tt]emp/
+[Tt]argets/
+obj/
+*.booproj
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vs/
+
+
+# JetBrains Rider
+.idea/
+
+# VSCode
+.vscode/
