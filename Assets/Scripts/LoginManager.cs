@@ -24,7 +24,7 @@ public class LoginManager : MonoBehaviour
     void Start()
     {
         // Inicializa el cliente de DynamoDB con las credenciales de AWS
-        var credentials = new BasicAWSCredentials("", "");
+        
         dynamoDBClient = new AmazonDynamoDBClient(credentials, Amazon.RegionEndpoint.USEast1);
 
         // Asegurarse de que UserSession exista
@@ -134,3 +134,4 @@ public class LoginManager : MonoBehaviour
         }
     }
 }
+
