@@ -31,7 +31,7 @@ public class RegisterManager : MonoBehaviour
 
         // Inicializa el cliente de DynamoDB
         var credentials = new Amazon.CognitoIdentity.CognitoAWSCredentials(
-            // Reemplaza con tu ID de grupo de identidades
+           // Reemplaza con tu ID de grupo de identidades
             Amazon.RegionEndpoint.USEast1
         );
         dynamoDBClient = new AmazonDynamoDBClient(credentials, Amazon.RegionEndpoint.USEast1);
