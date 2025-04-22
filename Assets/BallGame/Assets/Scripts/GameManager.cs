@@ -30,12 +30,15 @@ public class GameManager : MonoBehaviour
     {
         activeBalls = balls;
         resultText.text = "Observa...";
+
         inputField.text = "";
         inputField.interactable = false;
         inputEnabled = false;
 
-        Invoke(nameof(EnableInput), 2f);
+        // Esperar más para que todas lleguen a su punto máximo
+        Invoke(nameof(EnableInput), 3f);
     }
+
 
     void EnableInput()
     {
@@ -50,28 +53,39 @@ public class GameManager : MonoBehaviour
         if (!inputEnabled || activeBalls == null || activeBalls.Count == 0)
             return;
 
-        inputEnabled = false;
-        inputField.interactable = false;
-
         foreach (var ball in activeBalls)
         {
-            ball.GetComponent<Ball>().Stop(); // ❗ Detiene las pelotas
+            ball.GetComponent<Ball>().Stop(); // detener rebote al responder
         }
 
-        GameObject highest = activeBalls.OrderByDescending(b => b.GetComponent<Ball>().GetMaxHeight()).First();
+        // Mostrar en consola las alturas
+        foreach (var ball in activeBalls)
+        {
+            Debug.Log("Ball #" + ball.GetComponent<Ball>().ballNumber + " altura: " + ball.GetComponent<Ball>().GetMaxHeight());
+        }
+
+        GameObject highest = activeBalls
+            .OrderByDescending(b => b.GetComponent<Ball>().GetMaxHeight())
+            .First();
+
         int correctNumber = highest.GetComponent<Ball>().ballNumber;
 
         if (inputField.text.Trim() == correctNumber.ToString())
         {
             resultText.text = "✔️ ¡Correcto!";
+            inputField.interactable = false;
+            inputEnabled = false;
             Invoke(nameof(NextRound), 1.5f);
         }
         else
         {
-            resultText.text = $"❌ Era la #{correctNumber}. Intentémoslo otra vez.";
+            resultText.text = $"❌ Incorrecto. Era la #{correctNumber}";
+            inputField.interactable = false;
+            inputEnabled = false;
             Invoke(nameof(RepeatRound), 2f);
         }
     }
+
 
     void NextRound()
     {

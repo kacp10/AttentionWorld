@@ -17,7 +17,7 @@ public class Ball : MonoBehaviour
 
     void Update()
     {
-        if (!isStopped && transform.position.y > maxHeight)
+        if (!isStopped && rb.velocity.y > 0.1f && transform.position.y > maxHeight)
         {
             maxHeight = transform.position.y;
         }
