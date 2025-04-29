@@ -74,7 +74,7 @@ public class BallSpawner : MonoBehaviour
         }
 
         // ✅ Aquí se activa después del impulso
-        GameManager.Instance.SetActiveBalls(balls);
+        GameManager3.Instance.SetActiveBalls(balls);
     }
 
     public List<GameObject> GetCurrentBalls()

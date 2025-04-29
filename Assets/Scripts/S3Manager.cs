@@ -12,8 +12,9 @@ public class S3Manager : MonoBehaviour
 
     void Start()
     {
+        var credentials = new BasicAWSCredentials("", "");
         // Inicializar las credenciales de S3
-        
+
         s3Client = new AmazonS3Client(credentials, Amazon.RegionEndpoint.USEast2);
 
         Debug.Log("Cliente S3 inicializado");
