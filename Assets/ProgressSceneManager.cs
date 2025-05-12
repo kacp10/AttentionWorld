@@ -6,7 +6,7 @@ public class ProgressSceneManager : MonoBehaviour
 {
     [Header("Botones")]
     public Button goToCalendarButton;
-    public Button goToGraficButton;   // ← Nuevo botón para la gráfica
+    public Button goToGraficButton;   // Nuevo botón para la gráfica
 
     void Start()
     {
