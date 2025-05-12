@@ -117,7 +117,7 @@ public class AssignUI : MonoBehaviour
         var list = new List<string>();
         foreach (Transform t in selectedScroll.content.transform)
         {
-            Debug.Log($"🎯 Juego seleccionado: {t.name}");
+         
             list.Add(t.name);
         }
         return list;

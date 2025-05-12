@@ -96,6 +96,7 @@ public class AssignManager : MonoBehaviour
     }
 
     /*──────── GUARDAR ─────*/
+    // Método que guarda las asignaciones de juegos
     async void SaveAssignments()
     {
         var playerId = ui.CurrentStudentId;
@@ -112,29 +113,47 @@ public class AssignManager : MonoBehaviour
             return;
         }
 
+        // Debug para verificar los juegos seleccionados
+        Debug.Log($"✔ Juegos seleccionados para asignar: {string.Join(", ", games)}");
+
+        // Crear el item para DynamoDB
         var item = new Dictionary<string, AttributeValue>
-        {
-            { "PlayerID",  new AttributeValue { S = playerId } },
-            { "Date",      new AttributeValue { S = System.DateTime.UtcNow.ToString("yyyy-MM-dd") } },
-            { "TeacherID", new AttributeValue { S = teacherId } },
-            { "Classroom", new AttributeValue { S = selectedClassroom } },
-            { "Games",     new AttributeValue { SS = games } }
-        };
+    {
+        { "PlayerID",  new AttributeValue { S = playerId } },
+        { "Date",      new AttributeValue { S = System.DateTime.UtcNow.ToString("yyyy-MM-dd") } },
+        { "TeacherID", new AttributeValue { S = teacherId } },
+        { "Classroom", new AttributeValue { S = selectedClassroom } },
+        { "Games",     new AttributeValue { SS = games } }
+    };
 
         try
         {
+            // ⏱️ Inicia medición
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+
             await db.PutItemAsync(new PutItemRequest
             {
                 TableName = "DailyAssignments",
                 Item = item
             });
+
+            stopwatch.Stop();
+            float tiempoPut = stopwatch.ElapsedMilliseconds / 1000f;
+
+            // 🔍 Registro
+            Debug.Log($"[R3] Tiempo de respuesta PUT DailyAssignments: {tiempoPut:F2} segundos");
+            System.IO.File.AppendAllText("AssignTestResults.txt", $"{System.DateTime.Now} - {playerId} - {tiempoPut:F2}s\n");
+
             feedbackText.text = "¡Asignaciones guardadas!";
-            Debug.Log($"✔ Asignación guardada para {playerId}");
+            Debug.Log($"✔ Asignación guardada para {playerId} con juegos: {string.Join(", ", games)}");
         }
+
         catch (System.Exception ex)
         {
             Debug.LogError($"❌ ERROR al guardar {playerId}: {ex.Message}");
             feedbackText.text = "Error al guardar. Revisa consola.";
         }
     }
+
 }

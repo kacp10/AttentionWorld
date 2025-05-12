@@ -1,19 +1,21 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class BallSpawner : MonoBehaviour
 {
     public GameObject ballPrefab;
-    public int ballCount = 3;
     public Transform spawnAreaTopLeft;
     public Transform spawnAreaBottomRight;
     public Sprite[] ballSprites;
 
     private List<GameObject> balls = new List<GameObject>();
+    private int currentRound = 1;
 
     public void SpawnInitialBalls()
     {
+        currentRound = 1;
         StartCoroutine(SpawnAndLaunch());
     }
 
@@ -24,9 +26,9 @@ public class BallSpawner : MonoBehaviour
             Destroy(ball);
         }
 
-        if (!repeatSameRound && ballCount < 10)
+        if (!repeatSameRound && currentRound < 5)
         {
-            ballCount++; // Aumenta dificultad si acierta
+            currentRound++;
         }
 
         StartCoroutine(SpawnAndLaunch());
@@ -36,7 +38,8 @@ public class BallSpawner : MonoBehaviour
     {
         balls.Clear();
 
-        // Separación horizontal
+        int ballCount = Mathf.Clamp(currentRound + 1, 2, 5);
+
         float totalWidth = Mathf.Abs(spawnAreaBottomRight.position.x - spawnAreaTopLeft.position.x);
         float spacing = totalWidth / (ballCount + 1);
         float startX = spawnAreaTopLeft.position.x + spacing;
@@ -55,26 +58,27 @@ public class BallSpawner : MonoBehaviour
                 ball.GetComponent<SpriteRenderer>().sprite = ballSprites[i];
 
             Rigidbody2D rb = ball.GetComponent<Rigidbody2D>();
-            rb.gravityScale = 1;
+            rb.gravityScale = 1f;
+            rb.drag = 0.1f;
 
             balls.Add(ball);
         }
 
-        yield return new WaitForSeconds(1f); // dejar que se vean antes de rebotar
+        yield return new WaitForSeconds(1f);
 
-        int index = 0;
-        foreach (var ball in balls)
+        for (int i = 0; i < balls.Count; i++)
         {
-            float randomJump = Random.Range(5f, 7.5f);
-            Ball ballScript = ball.GetComponent<Ball>();
-            ballScript.ApplyInitialJump(randomJump);
-            ballScript.SetJumpForce(randomJump);
-            ballScript.ballNumber = index + 1;
-            index++;
+            float jump = Random.Range(6f, 10f); // Rebote más moderado
+
+            Ball ballScript = balls[i].GetComponent<Ball>();
+            ballScript.ApplyInitialJump(jump);
+            ballScript.SetJumpForce(jump);
         }
 
-        // ✅ Aquí se activa después del impulso
+        yield return new WaitForSeconds(1.5f); // 🔁 deja que empiecen a subir
+
         GameManager3.Instance.SetActiveBalls(balls);
+
     }
 
     public List<GameObject> GetCurrentBalls()

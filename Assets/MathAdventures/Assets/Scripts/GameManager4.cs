@@ -1,145 +1,148 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager4 : MonoBehaviour
 {
     public static GameManager4 Instance;
 
-    public TMP_Text questionText;  // Muestra la pregunta
-    public TMP_InputField answerInput; // Entrada del jugador
-    public TMP_Text resultText;    // Muestra el resultado (correcto o incorrecto)
-    public TMP_Text scoreText;     // Muestra el puntaje
-    public TMP_Text timerText;     // Muestra el tiempo restante
-    public int score = 0;          // Puntaje inicial
-    public float timeLimit = 30f;  // Tiempo limitado
-    private float currentTime;     // Tiempo actual
+    public TMP_Text questionText;
+    public TMP_InputField answerInput;
+    public TMP_Text resultText;
+    public TMP_Text timerText;
 
-    private int correctAnswer;     // Respuesta correcta de la pregunta
-    private int ageRange;          // Rango de edad
+    private float currentTime;
+    private int correctCount = 0;
+    private int incorrectCount = 0;
+    private int correctAnswer;
+    private int ageRange;
+
+    public float timeLimit = 5f;
+    private bool gameOver = false;
 
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);  // Esto asegura que el GameManager no se destruya entre escenas
-        }
-        else
-        {
-            Destroy(gameObject);  // Si ya existe una instancia, destruye este objeto
-        }
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     void Start()
     {
-        ageRange = PlayerPrefs.GetInt("AgeRange", 0);  // Recuperar el rango de edad desde PlayerPrefs
+        ageRange = PlayerPrefs.GetInt("AgeRange", 0);
         currentTime = timeLimit;
+        answerInput.ActivateInputField();
+        answerInput.onSubmit.AddListener(delegate { CheckAnswer(); });
+        answerInput.placeholder.gameObject.SetActive(false); // Sin placeholder
         ShowNewQuestion();
     }
 
     void Update()
     {
-        if (currentTime > 0)
+        if (gameOver) return;
+
+        currentTime -= Time.deltaTime;
+        timerText.text = "Tiempo: " + Mathf.CeilToInt(currentTime) + "s";
+
+        if (currentTime <= 0)
         {
-            currentTime -= Time.deltaTime;
-            timerText.text = "Tiempo Restante: " + Mathf.Round(currentTime).ToString() + "s";
-        }
-        else
-        {
-            resultText.text = "¡Tiempo agotado!";
-            resultText.color = Color.red;  // Mostrar mensaje de tiempo agotado
+            EndGame();
         }
     }
 
-    // Inicia el juego dependiendo de la edad seleccionada
-    public void StartGame(int ageRange)
+    void ShowNewQuestion()
     {
-        this.ageRange = ageRange;
-        // Configura las preguntas basadas en el rango de edad
-        if (ageRange == 0)  // 6-7 años: solo suma y resta
-        {
-            Debug.Log("Modo 6-7 años activado");
-        }
-        else if (ageRange == 1)  // 8-10 años: suma, resta y multiplicación
-        {
-            Debug.Log("Modo 8-10 años activado");
-        }
-    }
-
-    // Mostrar una nueva pregunta aleatoria
-    public void ShowNewQuestion()
-    {
-        int num1 = Random.Range(1, 20);  // Números más grandes para dificultar las restas
+        int num1 = Random.Range(1, 20);
         int num2 = Random.Range(1, 20);
 
-        if (ageRange == 0) // 6-7 años (sumas y restas básicas, no negativos)
+        if (ageRange == 0) // 6â€“7 aÃ±os
         {
-            if (Random.Range(0, 2) == 0)  // 50% de chance para suma o resta
+            if (Random.Range(0, 2) == 0)
             {
-                questionText.text = num1 + " + " + num2;
+                questionText.text = $"{num1} + {num2}";
                 correctAnswer = num1 + num2;
             }
             else
             {
-                // Asegurarse de que la resta no sea negativa
-                if (num1 < num2) num1 = num2 + Random.Range(1, 5);  // Aseguramos que num1 siempre sea mayor
-                questionText.text = num1 + " - " + num2;
+                if (num1 < num2) num1 = num2 + Random.Range(1, 5);
+                questionText.text = $"{num1} - {num2}";
                 correctAnswer = num1 - num2;
             }
         }
-        else if (ageRange == 1) // 8-10 años (sumas, restas y multiplicaciones)
+        else // 8â€“10 aÃ±os
         {
-            int operation = Random.Range(0, 3); // 0: Suma, 1: Resta, 2: Multiplicación
-
-            if (operation == 0)  // Suma
+            int op = Random.Range(0, 3);
+            if (op == 0)
             {
-                questionText.text = num1 + " + " + num2;
+                questionText.text = $"{num1} + {num2}";
                 correctAnswer = num1 + num2;
             }
-            else if (operation == 1)  // Resta
+            else if (op == 1)
             {
-                // Asegurarse de que la resta no sea negativa
-                if (num1 < num2) num1 = num2 + Random.Range(1, 5);  // Aseguramos que num1 siempre sea mayor
-                questionText.text = num1 + " - " + num2;
+                if (num1 < num2) num1 = num2 + Random.Range(1, 5);
+                questionText.text = $"{num1} - {num2}";
                 correctAnswer = num1 - num2;
             }
-            else  // Multiplicación
+            else
             {
                 num1 = Random.Range(1, 10);
                 num2 = Random.Range(1, 10);
-                questionText.text = num1 + " × " + num2;
+                questionText.text = $"{num1} Ã— {num2}";
                 correctAnswer = num1 * num2;
             }
         }
+
+        answerInput.text = "";
+        resultText.text = "";
+        answerInput.ActivateInputField();
     }
 
-    // Verificar si la respuesta es correcta
     public void CheckAnswer()
     {
-        string userAnswer = answerInput.text;
+        if (gameOver) return;
 
-        if (userAnswer == correctAnswer.ToString())
+        string userAnswer = answerInput.text.Trim();
+        answerInput.ActivateInputField();
+
+        if (int.TryParse(userAnswer, out int userValue))
         {
-            score++;
-            scoreText.text = "Puntaje: " + score.ToString();
-            resultText.text = "¡Correcto!";
-            resultText.color = Color.green; // Asegúrate de que se vea bien
+            if (userValue == correctAnswer)
+            {
+                resultText.text = "âœ” Â¡Correcto!";
+                resultText.color = Color.green;
+                correctCount++;
+            }
+            else
+            {
+                resultText.text = $"âœ˜ Incorrecto";
+                resultText.color = Color.red;
+                incorrectCount++;
+            }
         }
         else
         {
-            resultText.text = "¡Incorrecto! La respuesta correcta es " + correctAnswer.ToString();
-            resultText.color = Color.red; // Asegúrate de que se vea bien
+            resultText.text = "â›” Ingresa un nÃºmero vÃ¡lido";
+            resultText.color = Color.yellow;
         }
 
-        // **Avanzar automáticamente a la siguiente pregunta**
-        Invoke("ShowNextQuestion", 1f);  // Esperar 1 segundo para que el jugador vea el resultado
+        Invoke(nameof(ShowNewQuestion), 1.2f);
     }
 
-    // Función para mostrar la siguiente pregunta
-    void ShowNextQuestion()
+    void EndGame()
     {
-        ShowNewQuestion();   // Mostrar nueva pregunta
-        answerInput.text = "";  // Limpiar la respuesta anterior
-        resultText.text = "";  // Limpiar el texto de resultado
+        gameOver = true;
+        answerInput.interactable = false;
+
+        // Guardar resultados en PlayerPrefs
+        PlayerPrefs.SetInt("CorrectCount", correctCount);
+        PlayerPrefs.SetInt("IncorrectCount", incorrectCount);
+        PlayerPrefs.SetString("CognitiveArea", "calculo");
+        PlayerPrefs.SetString("GameName", "CÃ¡lculo divertido");
+
+        Invoke(nameof(LoadResultScene), 2f);
+    }
+
+    void LoadResultScene()
+    {
+        SceneManager.LoadScene("ResultScene");
     }
 }

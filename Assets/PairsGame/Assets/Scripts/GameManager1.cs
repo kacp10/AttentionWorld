@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager1 : MonoBehaviour
 {
@@ -9,8 +10,8 @@ public class GameManager1 : MonoBehaviour
 
     [Header("Cartas")]
     public GameObject cardPrefab;
-    public Sprite[] cardFaces; // del 1 al 6
-    public Sprite cardBack;    // imagen de reverso (candado)
+    public Sprite[] cardFaces;
+    public Sprite cardBack;
 
     [Header("UI")]
     public TMP_Text scoreText;
@@ -20,7 +21,7 @@ public class GameManager1 : MonoBehaviour
     private List<Card> flippedCards = new List<Card>();
     private int score = 0;
     private int matchedPairs = 0;
-    private float timeLeft = 45f;
+    private float timeLeft = 90f;
     private bool gameOver = false;
 
     void Awake()
@@ -32,6 +33,7 @@ public class GameManager1 : MonoBehaviour
     void Start()
     {
         GenerateBoard();
+        resultText.text = "";
     }
 
     void Update()
@@ -50,9 +52,8 @@ public class GameManager1 : MonoBehaviour
     void GenerateBoard()
     {
         List<int> types = new List<int>();
-        for (int i = 1; i <= 6; i++) { types.Add(i); types.Add(i); } // 6 pares
+        for (int i = 1; i <= 6; i++) { types.Add(i); types.Add(i); }
 
-        // Mezclar
         for (int i = 0; i < types.Count; i++)
         {
             int rand = Random.Range(i, types.Count);
@@ -125,11 +126,29 @@ public class GameManager1 : MonoBehaviour
         gameOver = true;
         resultText.text = won ? "¡GANASTE!" : "PERDISTE";
         resultText.color = won ? Color.green : Color.red;
+
+        int estimatedMistakes = Mathf.Max(0, (score - matchedPairs * 15) / -5);
+        int finalScore = 0;
+
+        if (won) finalScore = 1000;  // Completó todas las parejas
+        else if (matchedPairs >= 3) finalScore = 500;  // Completó al menos la mitad
+        else finalScore = 0;       // No completó suficiente
+
+        PlayerPrefs.SetInt("FinalScore", finalScore);
+        PlayerPrefs.SetString("CognitiveArea", "memoria");
+        PlayerPrefs.SetString("GameName", "Parejas");
+
+        Invoke(nameof(GoToResultScene), 2.5f);
+    }
+
+    void GoToResultScene()
+    {
+        SceneManager.LoadScene("ResultScene");
     }
 
     void UpdateUI()
     {
-        scoreText.text = score.ToString("00");
+        scoreText.text = ""; // ya no mostramos puntaje aquí
     }
 
     public bool CanFlipCard(Card card)

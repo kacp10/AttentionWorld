@@ -1269,6 +1269,7 @@ GameObject:
   - component: {fileID: 264142267}
   - component: {fileID: 264142266}
   - component: {fileID: 264142265}
+  - component: {fileID: 264142268}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -1326,6 +1327,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &264142268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264142264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f65147b489a114d42beeb6f132a04512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &310044634
 GameObject:
   m_ObjectHideFlags: 0
@@ -2929,7 +2942,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.826229}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -258.15, y: 221.24007}
+  m_AnchoredPosition: {x: -258.15, y: 221.24008}
   m_SizeDelta: {x: 197.71, y: 35.52}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &980855211
@@ -6495,7 +6508,6 @@ MonoBehaviour:
   classroomDropdown: {fileID: 1161537938}
   childDropdown: {fileID: 1840451294}
   registerButton: {fileID: 674907552}
-  loginButton: {fileID: 701787395}
   feedbackText: {fileID: 980855211}
   childButton: {fileID: 1647293622}
   parentsButton: {fileID: 1629603812}

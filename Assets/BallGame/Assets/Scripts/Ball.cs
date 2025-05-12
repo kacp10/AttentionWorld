@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class Ball : MonoBehaviour
 {
     public int ballNumber;
-    public float jumpForce;
+    public float jumpForce = 9f;
 
     private float maxHeight = 0f;
     private bool isStopped = false;
@@ -25,7 +27,18 @@ public class Ball : MonoBehaviour
 
     public void ApplyInitialJump(float force)
     {
-        rb.velocity = new Vector2(0f, force); // Salto inicial con velocidad fija
+        jumpForce = force;
+        rb.velocity = Vector2.zero;
+        rb.AddForce(Vector2.up * force, ForceMode2D.Impulse);
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (isStopped) return;
+        if (collision.collider.CompareTag("Floor"))
+        {
+            rb.velocity = new Vector2(0f, jumpForce); // Rebote continuo
+        }
     }
 
     public float GetMaxHeight()
@@ -40,6 +53,7 @@ public class Ball : MonoBehaviour
         rb.gravityScale = 0;
         rb.isKinematic = true;
     }
+
     public void SetJumpForce(float force)
     {
         jumpForce = force;

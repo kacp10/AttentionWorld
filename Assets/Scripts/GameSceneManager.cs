@@ -6,16 +6,20 @@ using TMPro;                 // Para TextMeshProUGUI
 public class GameSceneManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI greetingText; // Arrástralo desde el Inspector
+    [SerializeField] private Button dailyExerciseButton;   // 🔥 Ahora visible en el Inspector
+    [SerializeField] private Button singleExerciseButton;  // 🔥 Ahora visible en el Inspector
+    [SerializeField] private Button backButton;            // 🔥 Ahora visible en el Inspector
 
     void Start()
     {
+        // Mensaje de saludo
         if (greetingText == null)
         {
-            greetingText = GameObject.Find("greetingText").GetComponent<TextMeshProUGUI>();
+            greetingText = GameObject.Find("greetingText")?.GetComponent<TextMeshProUGUI>();
             Debug.Log("Asignación manual de greetingText: " + greetingText);
         }
 
-        string currentUser = UserSession.Instance.GetLoggedInUser();
+        string currentUser = UserSession.Instance?.GetLoggedInUser();
         Debug.Log("Usuario recuperado desde UserSession: " + currentUser);
 
         if (!string.IsNullOrEmpty(currentUser))
@@ -27,44 +31,15 @@ public class GameSceneManager : MonoBehaviour
         {
             Debug.LogWarning("⚠️ currentUser está vacío o nulo.");
         }
-    }
 
+        // Asignación de botones
+        if (dailyExerciseButton != null)
+            dailyExerciseButton.onClick.AddListener(() => SceneManager.LoadScene("GameAssignScene"));
 
-}
-
-public class ButtonManager : MonoBehaviour
-{
-    [SerializeField] private Button dailyExerciseButton;
-    [SerializeField] private Button singleExerciseButton;
-    [SerializeField] private Button backButton; // Opcional
-
-    void Start()
-    {
-        // Asignar listeners a los botones (asegúrate de haberlos arrastrado en el Inspector)
-        dailyExerciseButton.onClick.AddListener(GoToDailyExercise);
-        singleExerciseButton.onClick.AddListener(GoToSingleExercise);
+        if (singleExerciseButton != null)
+            singleExerciseButton.onClick.AddListener(() => SceneManager.LoadScene("SingleExerciseScene"));
 
         if (backButton != null)
-        {
-            backButton.onClick.AddListener(GoBack);
-        }
-    }
-
-    void GoToDailyExercise()
-    {
-        // Cambia "DailyExerciseScene" por el nombre real de la escena que tengas
-        SceneManager.LoadScene("DailyExerciseScene");
-    }
-
-    void GoToSingleExercise()
-    {
-        // Cambia "SingleExerciseScene" por el nombre real de la escena que tengas
-        SceneManager.LoadScene("SingleExerciseScene");
-    }
-
-    void GoBack()
-    {
-        // Carga la escena anterior o la que consideres tu "Menú"
-        SceneManager.LoadScene("MainMenu");
+            backButton.onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
     }
 }

@@ -4,53 +4,64 @@ using UnityEngine.SceneManagement;
 
 public class HomeChild : MonoBehaviour
 {
-    public Button startGameButton;  // Botón para iniciar el juego
-    public Button progressButton;   // Botón para ver el progreso
-    public Button settingsButton;   // Botón para ajustes
-    public Button profileButton;    // Botón para perfil
-    public Button helpButton;       // Botón para ayuda
+    [Header("Botones Principal")]
+    public Button startGameButton;  // Iniciar juego
+    public Button progressButton;   // Ver progreso
+    public Button settingsButton;   // Ajustes
+    public Button profileButton;    // Perfil
+    public Button helpButton;       // Ayuda
 
     void Start()
     {
         startGameButton.onClick.AddListener(GoToGameScene);
         progressButton.onClick.AddListener(GoToProgressScene);
-        settingsButton.onClick.AddListener(GoToPlaceholderScene);
-        profileButton.onClick.AddListener(GoToPlaceholderScene);
-        helpButton.onClick.AddListener(GoToPlaceholderScene);
+        settingsButton.onClick.AddListener(GoToSettingsScene);
+        profileButton.onClick.AddListener(GoToProfileScene);
+        helpButton.onClick.AddListener(GoToHelpScene);
     }
 
     void GoToGameScene()
     {
-        Debug.Log("Botón de Start Game fue presionado. Intentando cargar GameScene.");
+        Debug.Log("[HomeChild] Cargando GameScene...");
         SceneManager.LoadScene("GameScene");
     }
 
     void GoToProgressScene()
     {
-        // Verifica que exista un usuario logueado usando el método GetLoggedInUser()
         if (UserSession.Instance == null)
         {
-            Debug.LogError("No se ha encontrado una instancia de UserSession.");
+            Debug.LogError("[HomeChild] UserSession no encontrada: redirigiendo a LoginScene");
             SceneManager.LoadScene("LoginScene");
             return;
         }
-
-        string loggedInUser = UserSession.Instance.GetLoggedInUser();
-
-        if (string.IsNullOrWhiteSpace(loggedInUser))
+        string user = UserSession.Instance.GetLoggedInUser();
+        if (string.IsNullOrWhiteSpace(user))
         {
-            Debug.LogError("No se ha encontrado un usuario logueado. Redirigiendo al login.");
+            Debug.LogError("[HomeChild] Usuario no logueado: redirigiendo a LoginScene");
             SceneManager.LoadScene("LoginScene");
         }
         else
         {
-            Debug.Log("Usuario logueado: " + loggedInUser + ". Cargando progressScene.");
-            SceneManager.LoadScene("progressScene");
+            Debug.Log($"[HomeChild] Usuario: {user}. Cargando ProgressScene...");
+            SceneManager.LoadScene("ProgressScene");
         }
     }
 
-    void GoToPlaceholderScene()
+    void GoToSettingsScene()
     {
-        Debug.Log("Esta funcionalidad se implementará más adelante.");
+        Debug.Log("[HomeChild] Cargando SettingsScene...");
+        SceneManager.LoadScene("SettingsScene");
+    }
+
+    void GoToProfileScene()
+    {
+        Debug.Log("[HomeChild] Cargando ProfileManager...");
+        SceneManager.LoadScene("ProfileManager");
+    }
+
+    void GoToHelpScene()
+    {
+        Debug.Log("[HomeChild] Cargando HelpScene...");
+        SceneManager.LoadScene("HelpScene");
     }
 }

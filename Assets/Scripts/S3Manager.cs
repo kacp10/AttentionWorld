@@ -1,51 +1,75 @@
+﻿// S3Manager.cs
 using UnityEngine;
 using UnityEngine.UI;
+using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Amazon.Runtime;
+using Amazon.CognitoIdentity;
 using System.IO;
 using System.Threading.Tasks;
 
 public class S3Manager : MonoBehaviour
 {
+    public static S3Manager Instance { get; private set; }
+
+    // === AJUSTA SOLO ESTA CONSTANTE SI CAMBIA TU POOL ===
+    private const string identityPoolId = "";
+
     private AmazonS3Client s3Client;
 
-    void Start()
+    void Awake()
     {
-        var credentials = new BasicAWSCredentials("", "");
-        // Inicializar las credenciales de S3
-
-        s3Client = new AmazonS3Client(credentials, Amazon.RegionEndpoint.USEast2);
-
-        Debug.Log("Cliente S3 inicializado");
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            InitS3Client();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    // M�todo para cargar la imagen desde S3
-    public async Task LoadImage(string bucketName, string s3Key, Image targetImage)
+    void InitS3Client()
     {
-        var request = new GetObjectRequest
+        // Credenciales temporales vía Cognito
+        var credentials = new CognitoAWSCredentials(identityPoolId, RegionEndpoint.USEast1);
+
+        // El bucket está en us-east-2 (Ohio)
+        var config = new AmazonS3Config
         {
-            BucketName = bucketName,
-            Key = s3Key
+            RegionEndpoint = RegionEndpoint.USEast2,
+            ForcePathStyle = true   // evita problemas de firma con “virtual host style”
         };
 
+        s3Client = new AmazonS3Client(credentials, config);
+        Debug.Log("✅ S3Manager listo (Cognito)");
+    }
+
+    /// <summary>Carga un .png de S3 en un <see cref="UnityEngine.UI.Image"/>.</summary>
+    public async Task LoadImage(string bucket, string key, Image target)
+    {
         try
         {
-            var response = await s3Client.GetObjectAsync(request);
-            if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
-            {
-                MemoryStream memoryStream = new MemoryStream();
-                response.ResponseStream.CopyTo(memoryStream);
-                byte[] data = memoryStream.ToArray();
+            var resp = await s3Client.GetObjectAsync(bucket, key);
+            if (resp.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                throw new System.Exception($"Estado HTTP {resp.HttpStatusCode}");
 
-                Texture2D texture = new Texture2D(2, 2);
-                texture.LoadImage(data);
-                targetImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-            }
+            using var ms = new MemoryStream();
+            await resp.ResponseStream.CopyToAsync(ms);
+            var tex = new Texture2D(2, 2);
+            tex.LoadImage(ms.ToArray());
+
+            target.sprite = Sprite.Create(
+                tex,
+                new Rect(0, 0, tex.width, tex.height),
+                new Vector2(0.5f, 0.5f));
+            target.color = Color.white;
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("Error al cargar la imagen de S3: " + ex.Message);
+            Debug.LogError($"❌ S3 [{bucket}/{key}] → {ex.Message}");
         }
     }
 }

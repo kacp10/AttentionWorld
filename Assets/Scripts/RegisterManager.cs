@@ -1,28 +1,28 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEngine.UI;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using System.Collections.Generic;
 using TMPro;
 using System.Threading.Tasks;
-using System.Linq;  // Aseg˙rate de incluir esta lÌnea para usar mÈtodos LINQ
+using System.Linq;  // Aseg√∫rate de incluir esta l√≠nea para usar m√©todos LINQ
 
 public class RegisterManager : MonoBehaviour
 {
     public TMP_InputField userNameInput;  // Campo de texto para el nombre completo
     public TMP_InputField emailInput;  // Campo de texto para el email
-    public TMP_InputField passwordInput;  // Campo de texto para la contraseÒa
-    public TMP_InputField confirmPasswordInput;  // Campo de texto para confirmar la contraseÒa
-    public TMP_InputField yearOfBirthInput;  // AÒo de nacimiento
-    public TMP_Dropdown classroomDropdown;  // Dropdown para seleccionar el aula (solo para niÒo y docente)
-    public TMP_Dropdown childDropdown;  // Dropdown para que el padre seleccione al niÒo (solo si es padre)
-    public Button registerButton;  // BotÛn de registro
+    public TMP_InputField passwordInput;  // Campo de texto para la contrase√±a
+    public TMP_InputField confirmPasswordInput;  // Campo de texto para confirmar la contrase√±a
+    public TMP_InputField yearOfBirthInput;  // A√±o de nacimiento
+    public TMP_Dropdown classroomDropdown;  // Dropdown para seleccionar el aula (solo para ni√±o y docente)
+    public TMP_Dropdown childDropdown;  // Dropdown para que el padre seleccione al ni√±o (solo si es padre)
+    public Button registerButton;  // Bot√≥n de registro
     public TMP_Text feedbackText;  // Texto para mostrar los mensajes de feedback
 
     // Botones para seleccionar rol
-    public Button childButton;  // BotÛn para seleccionar el rol de Child
-    public Button parentsButton;  // BotÛn para seleccionar el rol de Parents
-    public Button teacherButton;  // BotÛn para seleccionar el rol de Teacher
+    public Button childButton;  // Bot√≥n para seleccionar el rol de Child
+    public Button parentsButton;  // Bot√≥n para seleccionar el rol de Parents
+    public Button teacherButton;  // Bot√≥n para seleccionar el rol de Teacher
 
     private AmazonDynamoDBClient dynamoDBClient;
     private string userRole = "";  // El rol del usuario (Child, Parents, Teacher)
@@ -38,57 +38,58 @@ public class RegisterManager : MonoBehaviour
         parentsButton.onClick.AddListener(() => SetUserRole("Parents"));
         teacherButton.onClick.AddListener(() => SetUserRole("Teacher"));
 
-        // Asignar el evento de clic al botÛn de registro
+        // Asignar el evento de clic al bot√≥n de registro
         registerButton.onClick.AddListener(async () => await HandleRegister());
 
-        // Cargar los dropdowns de niÒos y salones al inicio
+        // Cargar los dropdowns de ni√±os y salones al inicio
         LoadChildDropdown();
         LoadClassroomDropdown();
     }
 
-    // Cambiar visibilidad de campos seg˙n el rol seleccionado
+    // Cambiar visibilidad de campos seg√∫n el rol seleccionado
     void SetUserRole(string role)
     {
         userRole = role;
+        Debug.Log($"Rol seleccionado: {userRole}");
         UpdateFormBasedOnRole();
     }
 
-    // Configura la visibilidad y bloqueo de los campos seg˙n el rol
+    // Configura la visibilidad y bloqueo de los campos seg√∫n el rol
     void UpdateFormBasedOnRole()
     {
-        // Al principio, todo est· desbloqueado
+        // Al principio, todo est√° desbloqueado
         emailInput.interactable = true;
         yearOfBirthInput.interactable = true;
         classroomDropdown.interactable = true;
         childDropdown.interactable = true;
 
-        // Bloquea campos seg˙n el rol
+        // Bloquea campos seg√∫n el rol
         if (userRole == "Child")
         {
-            // Para los niÒos: bloquear los campos email y childDropdown
+            // Para los ni√±os: bloquear los campos email y childDropdown
             emailInput.interactable = false;  // Deshabilitar el campo de email
-            childDropdown.interactable = false;  // Deshabilitar el dropdown de niÒos
+            childDropdown.interactable = false;  // Deshabilitar el dropdown de ni√±os
         }
         else if (userRole == "Parents")
         {
             // Para los padres: bloquear el campo de yearOfBirthInput
-            yearOfBirthInput.interactable = false;  // Deshabilitar el campo de aÒo de nacimiento
-            classroomDropdown.interactable = true;  // El padre puede seleccionar el salÛn
-            childDropdown.interactable = true;  // El padre puede seleccionar el niÒo
+            yearOfBirthInput.interactable = false;  // Deshabilitar el campo de a√±o de nacimiento
+            classroomDropdown.interactable = true;  // El padre puede seleccionar el sal√≥n
+            childDropdown.interactable = true;  // El padre puede seleccionar el ni√±o
         }
         else if (userRole == "Teacher")
         {
             // Para los docentes: bloquear el campo de yearOfBirthInput
-            yearOfBirthInput.interactable = false;  // Deshabilitar el campo de aÒo de nacimiento
-            classroomDropdown.interactable = true;  // Los docentes pueden seleccionar el salÛn
-            childDropdown.interactable = false;  // Los docentes no pueden seleccionar al niÒo
+            yearOfBirthInput.interactable = false;  // Deshabilitar el campo de a√±o de nacimiento
+            classroomDropdown.interactable = true;  // Los docentes pueden seleccionar el sal√≥n
+            childDropdown.interactable = false;  // Los docentes no pueden seleccionar al ni√±o
         }
     }
 
-    // MÈtodo para cargar el Dropdown de niÒos
+    // M√©todo para cargar el Dropdown de ni√±os
     async void LoadChildDropdown()
     {
-        // Realizamos la consulta para obtener los nombres de los niÒos desde DynamoDB
+        // Realizamos la consulta para obtener los nombres de los ni√±os desde DynamoDB
         var request = new ScanRequest
         {
             TableName = "PlayerData",
@@ -111,7 +112,7 @@ public class RegisterManager : MonoBehaviour
             // Verificar si el atributo 'Name' existe antes de agregarlo al dropdown
             if (item.ContainsKey("Name"))
             {
-                string childName = item["Name"].S;  // Obtener el nombre del niÒo
+                string childName = item["Name"].S;  // Obtener el nombre del ni√±o
                 childrenNames.Add(childName);
             }
             else
@@ -120,21 +121,22 @@ public class RegisterManager : MonoBehaviour
             }
         }
 
-        // Llenamos el dropdown con los nombres de los niÒos
+        // Llenamos el dropdown con los nombres de los ni√±os
         childDropdown.ClearOptions();
         childDropdown.AddOptions(childrenNames);
     }
 
-    // MÈtodo para cargar el Dropdown de salones
+    // M√©todo para cargar el Dropdown de salones
     void LoadClassroomDropdown()
     {
-        // AquÌ agregamos los salones disponibles, por ahora solo Salon A y Salon B
+        // Aqu√≠ agregamos los salones disponibles, por ahora solo Salon A y Salon B
         List<string> classrooms = new List<string> { "Salon A", "Salon B" };
 
         classroomDropdown.ClearOptions();
         classroomDropdown.AddOptions(classrooms);
     }
 
+    // M√©todo para manejar el registro
     private async Task HandleRegister()
     {
         string fullName = userNameInput.text;  // Obtener nombre completo
@@ -144,63 +146,80 @@ public class RegisterManager : MonoBehaviour
         string yearOfBirth = yearOfBirthInput.text;
         string selectedClassroom = classroomDropdown.options[classroomDropdown.value].text;
 
-        // Validar contraseÒas
+        // Debug para verificar los datos ingresados
+        Debug.Log($"Nombre completo: {fullName}");
+        Debug.Log($"Correo electr√≥nico: {email}");
+        Debug.Log($"Contrase√±a: {password}");
+        Debug.Log($"Confirmar contrase√±a: {confirmPassword}");
+        Debug.Log($"A√±o de nacimiento: {yearOfBirth}");
+        Debug.Log($"Sal√≥n seleccionado: {selectedClassroom}");
+
+        // Validar contrase√±as
         if (password != confirmPassword)
         {
-            feedbackText.text = "Las contraseÒas no coinciden.";
+            feedbackText.text = "Las contrase√±as no coinciden.";
             feedbackText.color = Color.red;
+            Debug.LogWarning("‚ö†Ô∏è Las contrase√±as no coinciden.");
             return;
         }
 
         // Generar el PlayerID basado en el nombre completo
         string playerID = GeneratePlayerID(fullName);
 
+        // Debug para verificar el PlayerID
+        Debug.Log($"Generando PlayerID: {playerID}");
+
         // Crear el registro para DynamoDB
         var request = new PutItemRequest
         {
             TableName = "PlayerData",
             Item = new Dictionary<string, AttributeValue>
-            {
-                { "PlayerID", new AttributeValue { S = playerID } },  // Generado del nombre completo
-                { "Password", new AttributeValue { S = password } },
-                { "Role", new AttributeValue { S = userRole } },
-                { "Email", new AttributeValue { S = email } },  // Solo si el rol no es 'Child'
-                { "Name", new AttributeValue { S = fullName } },  // Subir el nombre completo
-                { "YearOfBirth", new AttributeValue { S = yearOfBirth } }, // AÒo de nacimiento (solo para niÒo)
-                { "Classroom", new AttributeValue { S = selectedClassroom } } // El aula seleccionada
-            }
+        {
+            { "PlayerID", new AttributeValue { S = playerID } },  // Generado del nombre completo
+            { "Password", new AttributeValue { S = password } },
+            { "Role", new AttributeValue { S = userRole } },
+            { "Email", new AttributeValue { S = email } },  // Solo si el rol no es 'Child'
+            { "Name", new AttributeValue { S = fullName } },  // Subir el nombre completo
+            { "YearOfBirth", new AttributeValue { S = yearOfBirth } }, // A√±o de nacimiento (solo para ni√±o)
+            { "Classroom", new AttributeValue { S = selectedClassroom } } // El aula seleccionada
+        }
         };
 
         // Si el rol es 'Child', eliminar el campo de email de la solicitud
         if (userRole == "Child")
         {
             request.Item.Remove("Email");
+            Debug.Log("‚ö†Ô∏è Rol 'Child' seleccionado: No se guardar√° el correo.");
         }
 
-        // Si el rol es 'Padre', asociar al niÒo seleccionado
+        // Si el rol es 'Padre', asociar al ni√±o seleccionado
         if (userRole == "Parents")
         {
             string selectedChild = childDropdown.options[childDropdown.value].text;
             request.Item.Add("ParentID", new AttributeValue { S = selectedChild });
+            Debug.Log($"Padre seleccionado para el ni√±o: {selectedChild}");
         }
 
+        // Realizar la petici√≥n a DynamoDB
         try
         {
             await dynamoDBClient.PutItemAsync(request);
-            feedbackText.text = "Registro exitoso. Por favor, inicia sesiÛn.";
+            feedbackText.text = "Registro exitoso. Por favor, inicia sesi√≥n.";
             feedbackText.color = Color.green;
+            Debug.Log("‚úî Registro exitoso en DynamoDB");
 
-            // Redirigir a la escena de login despuÈs de un breve retraso
+            // Redirigir a la escena de login despu√©s de un breve retraso
             Invoke("GoToLoginScene", 2);
         }
         catch (System.Exception ex)
         {
-            feedbackText.text = $"Error al registrar: {ex.Message}";
+            Debug.LogError($"‚ùå Error al registrar: {ex.Message}");
+            feedbackText.text = $"Error al registrar. Revisa consola. {ex.Message}";
             feedbackText.color = Color.red;
         }
     }
 
-    // MÈtodo para generar el PlayerID
+    // M√©todo para generar el PlayerID
     private string GeneratePlayerID(string fullName)
     {
         string[] nameParts = fullName.Split(' ');  // Dividir por espacios
@@ -210,17 +229,17 @@ public class RegisterManager : MonoBehaviour
             string secondNameLetter = nameParts[1].Substring(0, 1); // Primera letra del segundo nombre
             string lastName = nameParts[2];  // Apellido completo
 
-            return (firstNameLetter + secondNameLetter + lastName).ToLower(); // Convertir a min˙sculas
+            return (firstNameLetter + secondNameLetter + lastName).ToLower(); // Convertir a min√∫sculas
         }
         else
         {
-            return ""; // Retornar vacÌo si el nombre completo no tiene la estructura correcta
+            return ""; // Retornar vac√≠o si el nombre completo no tiene la estructura correcta
         }
     }
 
     void GoToLoginScene()
     {
-        // AquÌ cargamos la escena de login
+        // Aqu√≠ cargamos la escena de login
         UnityEngine.SceneManagement.SceneManager.LoadScene("LoginScene");
     }
 }

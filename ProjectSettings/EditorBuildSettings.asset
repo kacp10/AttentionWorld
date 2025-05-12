@@ -41,4 +41,46 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AssignScene.unity
     guid: 89d6777229ba4b54083ca3cf39512e2e
+  - enabled: 1
+    path: Assets/Scenes/GameAssignScene.unity
+    guid: 1f178ef202cb57844a045bae14defc78
+  - enabled: 1
+    path: Assets/Scenes/BriefScene.unity
+    guid: cf8ba5c69c3ea8e438a18868791c31ef
+  - enabled: 1
+    path: Assets/BallGame/Assets/Scenes/BallScene.unity
+    guid: 1028c22270da94e429852b19b82a3502
+  - enabled: 1
+    path: Assets/Scenes/ResultScene.unity
+    guid: db85dbc6ddac6a34ba8323945673cb17
+  - enabled: 1
+    path: Assets/MathAdventures/Assets/Scenes/GameSceneMath.unity
+    guid: e19787c65a3f8424290c505b3c37a8cb
+  - enabled: 1
+    path: Assets/Puzzle/Assets/Scenes/PuzzleScene.unity
+    guid: 1752a2ec82af86a418280302f65b8810
+  - enabled: 1
+    path: Assets/Scenes/SummaryScene.unity
+    guid: ba0bb8600a6c4fd47886a9b2b58786bd
+  - enabled: 1
+    path: Assets/PairsGame/Assets/Scenes/PairsScene.unity
+    guid: 5273dde758682d845b02b9d3dd3b8031
+  - enabled: 1
+    path: Assets/Scenes/CalendarScene.unity
+    guid: b2f0497e88cc7ef498ca58a93998a01e
+  - enabled: 1
+    path: Assets/GraficScene.unity
+    guid: da988c20409b25e488daae739cea8c84
+  - enabled: 1
+    path: Assets/Scenes/SettingsScene.unity
+    guid: 5f136a7f5174c6f418bfde8e4af4c247
+  - enabled: 1
+    path: Assets/Scenes/ProfileManager.unity
+    guid: 2c7edcc2cdba8f144ac8f6de24d9e462
+  - enabled: 1
+    path: Assets/Scenes/MyProfileScene.unity
+    guid: 069e8a1b928a17a42bd29884a2894edb
+  - enabled: 1
+    path: Assets/Scenes/GuideScene.unity
+    guid: d6e2e455fbde42645a16c89c52ce0839
   m_configObjects: {}
