@@ -12,7 +12,7 @@ using XCharts.Runtime;
 public class PerformanceChart : MonoBehaviour
 {
     [Header("UI References")]
-    public LineChart lineChart; // Asigna tu LineChart en el Inspector
+    public LineChart lineChart; // *Asigna tu LineChart en el Inspector
 
     private AmazonDynamoDBClient dbClient;
     private string playerId;
