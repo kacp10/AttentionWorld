@@ -30,7 +30,9 @@ public class CalendarSceneManager : MonoBehaviour
             return;
         }
 
-        playerId = UserSession.Instance != null ? UserSession.Instance.GetLoggedInUser() : "unknown";
+        playerId = UserSession.Instance != null
+          ? UserSession.Instance.GetCurrentPlayerId()
+          : "unknown";
         Debug.Log("🟢 Usuario actual: " + playerId);
 
         EnsureClient();

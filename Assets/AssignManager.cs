@@ -127,27 +127,27 @@ public class AssignManager : MonoBehaviour
     };
 
         try
-        {
-            // ⏱️ Inicia medición
-            var stopwatch = new System.Diagnostics.Stopwatch();
-            stopwatch.Start();
+{
+    // ⏱️ Inicia medición
+    var stopwatch = new System.Diagnostics.Stopwatch();
+    stopwatch.Start();
 
-            await db.PutItemAsync(new PutItemRequest
-            {
-                TableName = "DailyAssignments",
-                Item = item
-            });
+    await db.PutItemAsync(new PutItemRequest
+    {
+        TableName = "DailyAssignments",
+        Item = item
+    });
 
-            stopwatch.Stop();
-            float tiempoPut = stopwatch.ElapsedMilliseconds / 1000f;
+    stopwatch.Stop();
+    float tiempoPut = stopwatch.ElapsedMilliseconds / 1000f;
 
-            // 🔍 Registro
-            Debug.Log($"[R3] Tiempo de respuesta PUT DailyAssignments: {tiempoPut:F2} segundos");
-            System.IO.File.AppendAllText("AssignTestResults.txt", $"{System.DateTime.Now} - {playerId} - {tiempoPut:F2}s\n");
+    // 🔍 Registro
+    Debug.Log($"[R3] Tiempo de respuesta PUT DailyAssignments: {tiempoPut:F2} segundos");
+    System.IO.File.AppendAllText("AssignTestResults.txt", $"{System.DateTime.Now} - {playerId} - {tiempoPut:F2}s\n");
 
-            feedbackText.text = "¡Asignaciones guardadas!";
-            Debug.Log($"✔ Asignación guardada para {playerId} con juegos: {string.Join(", ", games)}");
-        }
+    feedbackText.text = "¡Asignaciones guardadas!";
+    Debug.Log($"✔ Asignación guardada para {playerId} con juegos: {string.Join(", ", games)}");
+}
 
         catch (System.Exception ex)
         {

@@ -121,7 +121,7 @@ public class LoginManager : MonoBehaviour
             switch (selectedRole)
             {
                 case "Child": SceneManager.LoadScene("HomeChildScene"); break;
-                case "Parent": SceneManager.LoadScene("HomeParentScene"); break;
+                case "Parent": SceneManager.LoadScene("HomeParentsScene"); break;
                 case "Teacher": SceneManager.LoadScene("HomeTeacherScene"); break;
             }
         }

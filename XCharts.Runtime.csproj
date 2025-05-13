@@ -326,8 +326,8 @@
     <Compile Include="Assets\XCharts-master\Runtime\Coord\Grid3D\GridCoord3DContext.cs" />
     <Compile Include="Assets\XCharts-master\Runtime\Internal\Attributes\ListForAttribute.cs" />
     <Compile Include="Assets\XCharts-master\Runtime\Serie\Line\LineHandler.PolarCoord.cs" />
-    <Compile Include="Assets\XCharts-master\Runtime\Component\Title\TitleHandler.cs" />
     <Compile Include="Assets\XCharts-master\Runtime\Serie\Bar\SimplifiedBar.cs" />
+    <Compile Include="Assets\XCharts-master\Runtime\Component\Title\TitleHandler.cs" />
     <Compile Include="Assets\XCharts-master\Runtime\Component\Axis\XAxis3D\XAxis3DHander.cs" />
     <Compile Include="Assets\XCharts-master\Runtime\Serie\SerieDataLink.cs" />
     <Compile Include="Assets\XCharts-master\Runtime\Internal\Attributes\DefaultTooltipAttribute.cs" />

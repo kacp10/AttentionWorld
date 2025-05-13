@@ -3,43 +3,53 @@
 public class UserSession : MonoBehaviour
 {
     public static UserSession Instance { get; private set; }
-    private string loggedInUser = "";
 
+    /* ─────────── Información de login ─────────── */
+    private string loggedInUser = "";                  // ID que inició sesión
+    private string currentRole = "";                  // "Child" | "Parent" | "Teacher"
+
+    /* ─────────── Vínculo padre → hijo ─────────── */
+    private string viewedChildId = null;               // Solo lo usa el padre
+
+    /* ─────────── Singleton ─────────── */
     void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Debug.Log("❌ UserSession ya existe, destruyendo esta instancia.");
             Destroy(gameObject);
             return;
         }
-
-        Debug.Log("✅ Nueva instancia de UserSession creada.");
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
-
-
-    // Método para guardar el usuario logueado
-    public void SetLoggedInUser(string username)
+    /* ============ Login ============ */
+    public void SetLoggedInUser(string username, string role = "Child")
     {
-        if (!string.IsNullOrEmpty(username))
-        {
-            loggedInUser = username;
-            Debug.Log($"✅ Usuario almacenado en UserSession: {loggedInUser}");
-        }
-        else
-        {
-            Debug.LogWarning("⚠️ El valor de username es nulo o vacío en SetLoggedInUser.");
-        }
+        if (string.IsNullOrEmpty(username)) return;
+        loggedInUser = username;
+        currentRole = role;
+        viewedChildId = null;               // por si venía de una sesión anterior
+        Debug.Log($"[UserSession] Login: {loggedInUser}  (role: {currentRole})");
     }
 
-    // Método para obtener el nombre del usuario logueado
-    public string GetLoggedInUser()
-    {
-        Debug.Log("Usuario recuperado desde UserSession: " + loggedInUser);
-        return loggedInUser;
-    }
+    public string GetLoggedInUser() => loggedInUser;
+    public string GetCurrentRole() => currentRole;
 
+    /* ============ Padre viendo hijo ============ */
+    public void SetViewedChild(string childId) => viewedChildId = childId;
+    public void ClearViewedChild() => viewedChildId = null;
+    public bool HasViewedChild() => !string.IsNullOrEmpty(viewedChildId);
+    public string GetViewedChild() => viewedChildId;
+
+    /* ============ NUEVO ============ */
+    /// <summary>
+    /// ID “activo” para todas las consultas de progreso.
+    /// • Si el padre seleccionó un hijo → devuelve el hijo.
+    /// • En cualquier otro caso → devuelve el usuario logeado.
+    /// </summary>
+    public string GetCurrentPlayerId()
+    {
+        return HasViewedChild() ? viewedChildId : loggedInUser;
+    }
 }

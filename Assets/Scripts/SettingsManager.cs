@@ -20,7 +20,7 @@ public class SettingsManager : MonoBehaviour
     public Image notificationToggleBG;
     public Image musicToggleBG;
 
-    private bool isInitialized = false;
+    bool isInitialized = false;
 
     void Start()
     {
@@ -28,7 +28,7 @@ public class SettingsManager : MonoBehaviour
         notificationToggle.isOn = PlayerPrefs.GetInt("NotificationsEnabled", 1) == 1;
         musicToggle.isOn = PlayerPrefs.GetInt("MusicEnabled", 1) == 1;
 
-        // Agregar listeners
+        // Listeners
         notificationToggle.onValueChanged.AddListener(OnNotificationChanged);
         musicToggle.onValueChanged.AddListener(OnMusicChanged);
         saveButton.onClick.AddListener(SaveSettings);
@@ -40,15 +40,17 @@ public class SettingsManager : MonoBehaviour
         musicFeedback.gameObject.SetActive(false);
         saveFeedbackText.gameObject.SetActive(false);
 
-        // Activar cambios visuales después de setup
         isInitialized = true;
     }
+
+    /* ---------- Cambios de toggles ---------- */
 
     public void OnNotificationChanged(bool isOn)
     {
         if (!isInitialized) return;
 
-        notificationFeedback.text = isOn ? "✔️ Notificaciones activadas al correo" : "❌ Notificaciones desactivadas";
+        notificationFeedback.text = isOn ? "✔️ Notificaciones activadas al correo"
+                                          : "❌ Notificaciones desactivadas";
         notificationFeedback.color = isOn ? new Color32(0, 130, 100, 255) : Color.red;
         notificationToggleBG.color = isOn ? new Color32(169, 255, 229, 255) : Color.white;
 
@@ -59,12 +61,15 @@ public class SettingsManager : MonoBehaviour
     {
         if (!isInitialized) return;
 
-        musicFeedback.text = isOn ? "✔️ Música activada" : "❌ Música desactivada";
+        musicFeedback.text = isOn ? "✔️ Música activada"
+                                   : "❌ Música desactivada";
         musicFeedback.color = isOn ? new Color32(0, 130, 100, 255) : Color.red;
         musicToggleBG.color = isOn ? new Color32(169, 255, 229, 255) : Color.white;
 
         StartCoroutine(HideFeedback(musicFeedback));
     }
+
+    /* ---------- Guardar ---------- */
 
     void SaveSettings()
     {
@@ -84,6 +89,8 @@ public class SettingsManager : MonoBehaviour
         feedback.gameObject.SetActive(false);
     }
 
+    /* ---------- Navegación ---------- */
+
     void OpenProfileScene()
     {
         SceneManager.LoadScene("MyProfileScene");
@@ -91,6 +98,20 @@ public class SettingsManager : MonoBehaviour
 
     void ReturnToHomeScene()
     {
-        SceneManager.LoadScene("HomeChildScene");
+        // Detectar rol actual
+        string role = UserSession.Instance != null ? UserSession.Instance.GetCurrentRole() : "Child";
+
+        switch (role)
+        {
+            case "Parents":
+                SceneManager.LoadScene("HomeParentsScene");
+                break;
+            case "Teacher":
+                SceneManager.LoadScene("HomeTeacherScene");
+                break;
+            default: // Child u otro
+                SceneManager.LoadScene("HomeChildScene");
+                break;
+        }
     }
 }

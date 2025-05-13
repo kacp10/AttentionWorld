@@ -12,7 +12,7 @@ using XCharts.Runtime;
 public class PerformanceChart : MonoBehaviour
 {
     [Header("UI References")]
-    public LineChart lineChart; // *Asigna tu LineChart en el Inspector
+    public LineChart lineChart; // Asigna tu LineChart en el Inspector
 
     private AmazonDynamoDBClient dbClient;
     private string playerId;
@@ -30,7 +30,9 @@ public class PerformanceChart : MonoBehaviour
     async void Start()
     {
         // 1) Inicializar AWS y fecha
-        playerId = UserSession.Instance?.GetLoggedInUser() ?? "unknown";
+        playerId = UserSession.Instance != null
+          ? UserSession.Instance.GetCurrentPlayerId()
+          : "unknown";
         var creds = new CognitoAWSCredentials(
             "",
             RegionEndpoint.USEast1);

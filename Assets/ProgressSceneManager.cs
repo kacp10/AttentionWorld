@@ -7,6 +7,8 @@ public class ProgressSceneManager : MonoBehaviour
     [Header("Botones")]
     public Button goToCalendarButton;
     public Button goToGraficButton;   // Nuevo botón para la gráfica
+    public Button goToClasificationButton;
+    public Button goToRegisterButton;
 
     void Start()
     {
@@ -20,6 +22,16 @@ public class ProgressSceneManager : MonoBehaviour
         goToGraficButton.onClick.AddListener(() =>
         {
             SceneManager.LoadScene("GraficScene");
+        });
+
+        goToClasificationButton.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene("ClasificationScene");
+        });
+
+        goToRegisterButton.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene("RegisterDataScene");
         });
     }
 }

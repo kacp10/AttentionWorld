@@ -83,4 +83,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GuideScene.unity
     guid: d6e2e455fbde42645a16c89c52ce0839
+  - enabled: 1
+    path: Assets/Scenes/ClasificationScene.unity
+    guid: 1b48d692d666f1e48ad4aee5bc5749cf
+  - enabled: 1
+    path: Assets/Scenes/RegisterDataScene.unity
+    guid: b612f583229038f4aaf0cf4b2eb39334
+  - enabled: 1
+    path: Assets/Scenes/HomeParentsScene.unity
+    guid: a98b148caf9896f4ea39c7ae7c930568
   m_configObjects: {}

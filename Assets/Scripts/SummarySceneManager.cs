@@ -88,8 +88,16 @@ public class SummarySceneManager : MonoBehaviour
             doc["CorrectCount"] = corr;
             doc["IncorrectCount"] = inc;
         }
+        var sw = System.Diagnostics.Stopwatch.StartNew();
 
+        // 🛰️ Esperar subida a DynamoDB
         yield return table.PutItemAsync(doc);
+        sw.Stop();
+        Debug.Log($"[R6] PUT GameProgress: {sw.ElapsedMilliseconds} ms");
+
+        // 📝 Escribir registro en archivo local
+        string linea = $"{System.DateTime.Now:dd/MM/yyyy hh:mm:ss tt} - {pid} - {sw.ElapsedMilliseconds / 1000f:F2}s\n";
+        System.IO.File.AppendAllText("GameProgressTestResults.txt", linea);
         Debug.Log($"⏫ Subido juego {idx + 1}: {game} ({score} pts)");
     }
 
