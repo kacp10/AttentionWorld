@@ -11,107 +11,128 @@ using System.Threading.Tasks;
 
 public class ProfileDisplay : MonoBehaviour
 {
-    [Header("Referencias UI (TextMeshPro)")]
-    public TMP_Text childNameText;
-    public TMP_Text birthYearText;
-    public TMP_Text classroomText;
-    public TMP_Text parentNameText;
+    [Header("TextMeshPro fields")]
+    public TMP_Text childNameText;    // Siempre = nombre del usuario logeado
+    public TMP_Text birthYearText;    // Año (niño)  | Correo (padre)
+    public TMP_Text classroomText;    // Aula
+    public TMP_Text parentNameText;   // Nombre del padre (niño) | Nombre del hijo (padre)
+
+    [Header("Text Predeterminados")]
+    public TMP_Text dateText;         // "Año de nacimiento" o "Correo" según el rol
+    public TMP_Text parentText;       // "Padre" o "Nombre del hijo" según el rol
+
 
     [Header("Botón Back")]
     public Button backButton;
 
-    private AmazonDynamoDBClient dbClient;
-    private string playerId;
+    AmazonDynamoDBClient dbClient;
+    string playerId;
 
+    /*──────────────────────────────*/
     async void Start()
     {
-        playerId = UserSession.Instance?.GetLoggedInUser() ?? "unknown";
+        playerId = UserSession.Instance != null
+                 ? UserSession.Instance.GetCurrentPlayerId()
+                 : "unknown";
+
         EnsureClient();
 
         if (backButton != null)
             backButton.onClick.AddListener(() => SceneManager.LoadScene("SettingsScene"));
 
-        var childData = await GetUserDataAsync(playerId);
-        if (childData == null)
+        var myData = await GetUserDataAsync(playerId);
+        if (myData == null)
         {
-            Debug.LogError("❌ No se encontraron datos del niño.");
+            Debug.LogError("❌ No se encontraron datos de " + playerId);
             return;
         }
 
-        string childName = childData.ContainsKey("Name") ? childData["Name"].S : "Desconocido";
-        string classroom = childData.ContainsKey("Classroom") ? childData["Classroom"].S : "—";
-        string year = childData.ContainsKey("YearOfBirth") ? childData["YearOfBirth"].S : "—";
+        string role = UserSession.Instance != null ? UserSession.Instance.GetCurrentRole()
+                                                        : "Child";
+        string fullName = myData.GetValueOrDefault("Name")?.S ?? "Desconocido";
+        string classroom = myData.GetValueOrDefault("Classroom")?.S ?? "—";
+        string year = myData.GetValueOrDefault("YearOfBirth")?.S ?? "—";
 
-        childNameText.text = childName;
+        /*──────── Siempre mostrar mi propio nombre en childNameText ───────*/
+        childNameText.text = fullName;
         classroomText.text = classroom;
-        birthYearText.text = year;
 
-        var parentData = await GetParentByChildNameAsync(childName);
-        if (parentData != null && parentData.ContainsKey("Name"))
-            parentNameText.text = parentData["Name"].S;
+        /*──────── Rol CHILD ──────────────*/
+        if (role == "Child")
+        {
+            birthYearText.text = year;
+
+            var parentData = await GetParentByChildNameAsync(fullName);
+            parentNameText.text = parentData != null ? parentData["Name"].S
+                                                     : "No registrado";
+        }
+        /*──────── Rol PARENTS ────────────*/
+        else if (role == "Parents")
+        {
+            dateText.text = "Correo";               // Padre
+            parentText.text = "Nombre del hijo";
+
+            /* ParentID contiene el nombre del hijo */
+            string childFullName = myData.GetValueOrDefault("ParentID")?.S ?? "—";
+            string parentEmail = myData.GetValueOrDefault("Email")?.S ?? "—";
+
+            birthYearText.text = parentEmail;      // mostrar correo del padre
+            parentNameText.text = childFullName;    // mostrar nombre del hijo
+        }
+        /*──────── Otros roles ────────────*/
         else
-            parentNameText.text = "No registrado";
+        {
+            birthYearText.text = year;
+            parentNameText.text = "—";
+        }
     }
 
-    async Task<Dictionary<string, AttributeValue>> GetUserDataAsync(string playerId)
+    /*──────────── Helpers DynamoDB ────────────*/
+
+    async Task<Dictionary<string, AttributeValue>> GetUserDataAsync(string id)
     {
-        var request = new GetItemRequest
+        var req = new GetItemRequest
         {
             TableName = "PlayerData",
-            Key = new Dictionary<string, AttributeValue> {
-                { "PlayerID", new AttributeValue { S = playerId } }
+            Key = new Dictionary<string, AttributeValue>{
+                {"PlayerID", new AttributeValue{ S = id }}
             }
         };
-
-        var response = await dbClient.GetItemAsync(request);
-        return response.Item.Count > 0 ? response.Item : null;
+        var resp = await dbClient.GetItemAsync(req);
+        return resp.Item.Count > 0 ? resp.Item : null;
     }
 
     async Task<Dictionary<string, AttributeValue>> GetParentByChildNameAsync(string childName)
     {
-        var request = new ScanRequest
+        var scan = new ScanRequest
         {
             TableName = "PlayerData",
             FilterExpression = "#r = :parentRole",
-            ExpressionAttributeNames = new Dictionary<string, string>
+            ExpressionAttributeNames = new() { { "#r", "Role" } },
+            ExpressionAttributeValues = new()
             {
-                { "#r", "Role" }
-            },
-            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-            {
-                { ":parentRole", new AttributeValue { S = "Parents" } }
+                {":parentRole", new AttributeValue{ S = "Parents" }}
             }
         };
 
-        var response = await dbClient.ScanAsync(request);
+        var resp = await dbClient.ScanAsync(scan);
+        string target = childName.Trim().ToLowerInvariant();
 
-        string targetName = childName.Trim().ToLowerInvariant();
-
-        foreach (var item in response.Items)
+        foreach (var item in resp.Items)
         {
-            if (item.TryGetValue("ParentID", out var pidVal))
-            {
-                string parentIdValue = pidVal.S?.Trim().ToLowerInvariant();
-                if (parentIdValue == targetName)
-                {
-                    Debug.Log("✅ Padre encontrado: " + item["Name"].S);
-                    return item;
-                }
-            }
+            if (item.TryGetValue("ParentID", out var pid) &&
+                pid.S?.Trim().ToLowerInvariant() == target)
+                return item;
         }
-
-        Debug.LogWarning("⚠️ No se encontró padre con ParentID igual a " + childName);
         return null;
     }
 
     void EnsureClient()
     {
         if (dbClient != null) return;
-
-        var credentials = new CognitoAWSCredentials(
-            "",
-            RegionEndpoint.USEast1
-        );
-        dbClient = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast1);
+        var creds = new CognitoAWSCredentials(
+                        "",
+                        RegionEndpoint.USEast1);
+        dbClient = new AmazonDynamoDBClient(creds, RegionEndpoint.USEast1);
     }
 }

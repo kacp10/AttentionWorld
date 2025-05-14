@@ -826,6 +826,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settingButtonParents: {fileID: 64738441}
+  profileButtonParents: {fileID: 439623253}
 --- !u!1 &402665588
 GameObject:
   m_ObjectHideFlags: 0

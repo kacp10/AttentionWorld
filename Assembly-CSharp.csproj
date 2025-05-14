@@ -72,6 +72,7 @@
     <Compile Include="Assets\Scripts\GameControl.cs" />
     <Compile Include="Assets\Scripts\UnityMainThreadDispatcher.cs" />
     <Compile Include="Assets\BallGame\Assets\Scripts\Ball.cs" />
+    <Compile Include="Assets\TeacherStudentManager.cs" />
     <Compile Include="Assets\Whack-A-Mole-main\Assets\Scripts\Mole.cs" />
     <Compile Include="Assets\Scripts\GameSceneManager.cs" />
     <Compile Include="Assets\Scripts\LoginManager.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="Assets\Whack-A-Mole-main\Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Stars\Assets\Scripts\GameManager2.cs" />
     <Compile Include="Assets\Stars\Assets\Scripts\ConstellationGenerator.cs" />
+    <Compile Include="Assets\Scripts\ProfileParents.cs" />
     <Compile Include="Assets\BallGame\Assets\Scripts\GameManager3.cs" />
     <Compile Include="Assets\Puzzle\Assets\Scripts\menu.cs" />
     <Compile Include="Assets\PairsGame\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="Assets\AssignManager.cs" />
     <Compile Include="Assets\PairsGame\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
     <Compile Include="Assets\PairsGame\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
+    <Compile Include="Assets\TeacherManager.cs" />
     <Compile Include="Assets\Scripts\SettingsManager.cs" />
     <Compile Include="Assets\MathAdventures\Assets\Scripts\GameManager4.cs" />
     <Compile Include="Assets\PairsGame\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />

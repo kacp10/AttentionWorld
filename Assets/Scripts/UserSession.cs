@@ -9,7 +9,8 @@ public class UserSession : MonoBehaviour
     private string currentRole = "";                  // "Child" | "Parent" | "Teacher"
 
     /* ─────────── Vínculo padre → hijo ─────────── */
-    private string viewedChildId = null;               // Solo lo usa el padre
+    private string viewedChildId = null;   // Solo lo usa el padre
+    private string classroom = "";
 
     /* ─────────── Singleton ─────────── */
     void Awake()
@@ -29,13 +30,14 @@ public class UserSession : MonoBehaviour
         if (string.IsNullOrEmpty(username)) return;
         loggedInUser = username;
         currentRole = role;
+        this.classroom = classroom;
         viewedChildId = null;               // por si venía de una sesión anterior
         Debug.Log($"[UserSession] Login: {loggedInUser}  (role: {currentRole})");
     }
 
     public string GetLoggedInUser() => loggedInUser;
     public string GetCurrentRole() => currentRole;
-
+    public string GetClassroom() => classroom;
     /* ============ Padre viendo hijo ============ */
     public void SetViewedChild(string childId) => viewedChildId = childId;
     public void ClearViewedChild() => viewedChildId = null;

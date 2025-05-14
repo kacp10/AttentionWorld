@@ -92,4 +92,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/HomeParentsScene.unity
     guid: a98b148caf9896f4ea39c7ae7c930568
+  - enabled: 1
+    path: Assets/Scenes/ProfileManagerParents.unity
+    guid: ae9cf52b9d4f81c43a469a23aeabb1d3
+  - enabled: 1
+    path: Assets/Scenes/TeacherStudentListScene.unity
+    guid: f59451f170eb70445bc5a03f448dab2b
   m_configObjects: {}

@@ -1,64 +1,67 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;          // Stopwatch
+using System.IO;
+using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Runtime;
-using System.Collections.Generic;
-using TMPro;
-using UnityEngine.SceneManagement;
-using System.Diagnostics; // ← necesario para Stopwatch
-using System.IO;
 
-/// <summary>
-/// Controla el flujo de inicio de sesión y registra métricas de usabilidad (T2) + R1 (rendimiento).
-/// </summary>
 public class LoginManager : MonoBehaviour
 {
+    /*────────── Referencias UI ──────────*/
     [Header("Inputs")]
-    [SerializeField] private TMP_InputField loginField;
-    [SerializeField] private TMP_InputField passwordField;
+    [SerializeField] TMP_InputField loginField;
+    [SerializeField] TMP_InputField passwordField;
 
     [Header("Botones")]
-    [SerializeField] private Button loginButton;
-    [SerializeField] private Button childButton;
-    [SerializeField] private Button parentsButton;
-    [SerializeField] private Button teacherButton;
+    [SerializeField] Button loginButton;
+    [SerializeField] Button childButton;
+    [SerializeField] Button parentsButton;
+    [SerializeField] Button teacherButton;
 
     [Header("Feedback")]
-    [SerializeField] private TMP_Text feedbackText;
+    [SerializeField] TMP_Text feedbackText;
 
-    private AmazonDynamoDBClient db;
-    private string selectedRole = "";
-    private UsabilityTracker tracker;
+    /*────────── AWS & tracking ──────────*/
+    AmazonDynamoDBClient db;
+    string selectedRole = "";                // Child | Parents | Teacher
+    UsabilityTracker tracker;                // Métrica T2
 
-    private void Start()
+    /*─────────────────────────────────────*/
+    void Start()
     {
+        // Credenciales demo
         var cred = new BasicAWSCredentials(
             "",
             "");
         db = new AmazonDynamoDBClient(cred, Amazon.RegionEndpoint.USEast1);
 
         if (UserSession.Instance == null)
-        {
-            var go = new GameObject("UserSessionManager");
-            go.AddComponent<UserSession>();
-        }
+            new GameObject("UserSessionManager").AddComponent<UserSession>();
 
         tracker = FindObjectOfType<UsabilityTracker>();
 
+        /* Rol elegido */
         childButton.onClick.AddListener(() => SetRole("Child"));
-        parentsButton.onClick.AddListener(() => SetRole("Parent"));
+        parentsButton.onClick.AddListener(() => SetRole("Parents"));
         teacherButton.onClick.AddListener(() => SetRole("Teacher"));
+
         loginButton.onClick.AddListener(HandleLogin);
     }
 
-    private void SetRole(string role)
+    void SetRole(string role)
     {
         selectedRole = role;
         UnityEngine.Debug.Log($"Rol seleccionado: {selectedRole}");
     }
 
-    private void HandleLogin()
+    /*───────────────────────── LOGIN ─────────────────────────*/
+    void HandleLogin()
     {
         tracker?.StartTask("T2");
         float t0 = Time.realtimeSinceStartup;
@@ -83,45 +86,38 @@ public class LoginManager : MonoBehaviour
 
         try
         {
-            // ── MÉTRICA DE RENDIMIENTO R1 ──
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
+            /*──────── Métrica R1 (rendimiento de login) ────────*/
+            var sw = Stopwatch.StartNew();
 
             var response = db.GetItemAsync(request).Result;
 
-            stopwatch.Stop();
-            float tiempoR1 = stopwatch.ElapsedMilliseconds / 1000f;
-            UnityEngine.Debug.Log($"[R1] Tiempo de respuesta GET PlayerData: {tiempoR1:F2} segundos");
+            sw.Stop();
+            float r1 = sw.ElapsedMilliseconds / 1000f;
+            UnityEngine.Debug.Log($"[R1] GET PlayerData: {r1:F2}s");
+            File.AppendAllText("LoginTestResults.txt",
+                $"{System.DateTime.Now} - {username} - {r1:F2}s\n");
 
-            // Guardar en archivo
-            File.AppendAllText("LoginTestResults.txt", $"{System.DateTime.Now} - {username} - {tiempoR1:F2}s\n");
+            /*──────── Validaciones ────────*/
+            if (response.Item == null) { Fail("Usuario no encontrado."); return; }
+            if (response.Item["Password"].S != password) { Fail("Contraseña incorrecta."); return; }
 
-            if (response.Item == null)
-            {
-                Fail("Usuario no encontrado.");
-                return;
-            }
-
-            string storedPass = response.Item["Password"].S;
-            if (storedPass != password)
-            {
-                Fail("Contraseña incorrecta.");
-                return;
-            }
-
+            /*──────── Login OK ────────*/
             float elapsed = Time.realtimeSinceStartup - t0;
             UnityEngine.Debug.Log($"Login exitoso en {elapsed:F2}s");
 
             feedbackText.text = "¡Login exitoso!";
             feedbackText.color = Color.green;
 
-            UserSession.Instance.SetLoggedInUser(username);
+            /* Guarda usuario y ROL correcto */
+            UserSession.Instance.SetLoggedInUser(username, selectedRole);
+
             tracker?.EndTask("T2", true);
 
+            /*──────── Navegación ────────*/
             switch (selectedRole)
             {
                 case "Child": SceneManager.LoadScene("HomeChildScene"); break;
-                case "Parent": SceneManager.LoadScene("HomeParentsScene"); break;
+                case "Parents": SceneManager.LoadScene("HomeParentsScene"); break;
                 case "Teacher": SceneManager.LoadScene("HomeTeacherScene"); break;
             }
         }
@@ -130,6 +126,7 @@ public class LoginManager : MonoBehaviour
             Fail($"Error de servidor: {ex.Message}");
         }
 
+        /*──────── Local helper ────────*/
         void Fail(string msg)
         {
             UnityEngine.Debug.LogWarning(msg);
@@ -139,13 +136,3 @@ public class LoginManager : MonoBehaviour
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
