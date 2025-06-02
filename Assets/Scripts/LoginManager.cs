@@ -23,6 +23,7 @@ public class LoginManager : MonoBehaviour
     [SerializeField] Button childButton;
     [SerializeField] Button parentsButton;
     [SerializeField] Button teacherButton;
+    [SerializeField] Button registerButton;
 
     [Header("Feedback")]
     [SerializeField] TMP_Text feedbackText;
@@ -52,6 +53,7 @@ public class LoginManager : MonoBehaviour
         teacherButton.onClick.AddListener(() => SetRole("Teacher"));
 
         loginButton.onClick.AddListener(HandleLogin);
+        registerButton.onClick.AddListener(() => SceneManager.LoadScene("RegisterScene"));
     }
 
     void SetRole(string role)

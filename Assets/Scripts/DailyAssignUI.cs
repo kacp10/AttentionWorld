@@ -77,7 +77,7 @@ public class DailyAssignUI : MonoBehaviour
 
         // BOTÓN ATRÁS
         backBtn.onClick.AddListener(() =>
-            UnityEngine.SceneManagement.SceneManager.LoadScene("HomeChild"));
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene"));
     }
 
     async Task LoadAssignmentsFromDB()

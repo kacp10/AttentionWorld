@@ -60,6 +60,8 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.47f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\GraficManager.cs" />
+    <Compile Include="Assets\ClasificationManager.cs" />
     <Compile Include="Assets\ProgressSceneManager.cs" />
     <Compile Include="Assets\Scripts\StudentRowMeta.cs" />
     <Compile Include="Assets\PairsGame\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="Assets\Scripts\RegisterManager.cs" />
     <Compile Include="Assets\PairsGame\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
     <Compile Include="Assets\PairsGame\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
+    <Compile Include="Assets\helpManager.cs" />
     <Compile Include="Assets\PairsGame\Assets\Scripts\GameManager1.cs" />
     <Compile Include="Assets\PairsGame\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
     <Compile Include="Assets\Scripts\UserSession.cs" />
@@ -130,6 +133,7 @@
     <Compile Include="Assets\PairsGame\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
     <Compile Include="Assets\PairsGame\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs" />
     <Compile Include="Assets\PairsGame\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
+    <Compile Include="Assets\Scripts\OnlyGameSceneManager.cs" />
     <Compile Include="Assets\PairsGame\Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
     <Compile Include="Assets\Scripts\UsabilityTracker.cs" />
     <Compile Include="Assets\Scripts\S3Manager.cs" />

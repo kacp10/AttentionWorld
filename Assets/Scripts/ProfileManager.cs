@@ -9,6 +9,7 @@ using Amazon.CognitoIdentity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 public class ProfileManager : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class ProfileManager : MonoBehaviour
     [SerializeField] TMP_Text usernameText;
     [SerializeField] Image[] medalImages;      // 4 slots
     [SerializeField] TMP_Text[] lastGameTexts;  // 4 slots
+    [SerializeField] Button backButton;
 
     // ─────────  AWS  ─────────
     AmazonDynamoDBClient db;
@@ -34,6 +36,11 @@ public class ProfileManager : MonoBehaviour
     // ===================  START  ===================
     async void Start()
     {
+        if (backButton != null)
+            backButton.onClick.AddListener(GoBackHomeChildScene);
+        else
+            Debug.LogWarning("BackButton no asignado en inspector.");
+
         playerId = UserSession.Instance?.GetLoggedInUser() ?? "unknown";
         usernameText.text = playerId;
 
@@ -84,6 +91,10 @@ public class ProfileManager : MonoBehaviour
 
         for (int i = 0; i < lastGameTexts.Length; i++)
             lastGameTexts[i].text = i < list.Length ? list[i].GameName : "-";
+    }
+    void GoBackHomeChildScene()
+    {
+        SceneManager.LoadScene("HomeChildScene");
     }
 
     // ================  DYNAMODB =====================

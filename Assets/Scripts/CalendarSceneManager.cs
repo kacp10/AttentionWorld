@@ -9,6 +9,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Amazon.CognitoIdentity;
+using UnityEngine.SceneManagement;
 
 public class CalendarSceneManager : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class CalendarSceneManager : MonoBehaviour
     public TMP_Text monthYearText;
     public GameObject dayCellPrefab;
     public Transform gridParent;
-
+    public Button backButton;
     private AmazonDynamoDBClient dbClient;
     private string playerId;
     private HashSet<int> playedDays = new HashSet<int>();
@@ -28,6 +29,14 @@ public class CalendarSceneManager : MonoBehaviour
         {
             Debug.LogError("[CalendarSceneManager] Falta asignar referencias en el Inspector.");
             return;
+        }
+        if (backButton == null)
+        {
+            Debug.LogWarning("[CalendarSceneManager] backButton no asignado en Inspector.");
+        }
+        else
+        {
+            backButton.onClick.AddListener(OnBackButtonClicked);
         }
 
         playerId = UserSession.Instance != null
@@ -41,6 +50,10 @@ public class CalendarSceneManager : MonoBehaviour
         Debug.Log("📅 Cargando calendario para: " + today.ToString("yyyy-MM"));
 
         LoadPlayedDays(today.Year, today.Month);
+    }
+    private void OnBackButtonClicked()
+    {
+        SceneManager.LoadScene("ProgressScene");
     }
 
     void LoadPlayedDays(int year, int month)

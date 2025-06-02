@@ -107,20 +107,20 @@ public class GameManager4 : MonoBehaviour
         {
             if (userValue == correctAnswer)
             {
-                resultText.text = "✔ ¡Correcto!";
+                resultText.text = "¡Correcto!";
                 resultText.color = Color.green;
                 correctCount++;
             }
             else
             {
-                resultText.text = $"✘ Incorrecto";
+                resultText.text = $"Incorrecto";
                 resultText.color = Color.red;
                 incorrectCount++;
             }
         }
         else
         {
-            resultText.text = "⛔ Ingresa un número válido";
+            resultText.text = "Ingresa un número válido";
             resultText.color = Color.yellow;
         }
 

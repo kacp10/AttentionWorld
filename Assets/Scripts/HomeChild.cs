@@ -9,7 +9,8 @@ public class HomeChild : MonoBehaviour
     public Button progressButton;   // Ver progreso
     public Button settingsButton;   // Ajustes
     public Button profileButton;    // Perfil
-    public Button helpButton;       // Ayuda
+    public Button helpButton;
+    public Button logoutButton; 
 
     void Start()
     {
@@ -18,6 +19,7 @@ public class HomeChild : MonoBehaviour
         settingsButton.onClick.AddListener(GoToSettingsScene);
         profileButton.onClick.AddListener(GoToProfileScene);
         helpButton.onClick.AddListener(GoToHelpScene);
+        logoutButton.onClick.AddListener(GoToLoginScene);
     }
 
     void GoToGameScene()
@@ -25,7 +27,7 @@ public class HomeChild : MonoBehaviour
         Debug.Log("[HomeChild] Cargando GameScene...");
         SceneManager.LoadScene("GameScene");
     }
-
+   
     void GoToProgressScene()
     {
         if (UserSession.Instance == null)
@@ -63,5 +65,9 @@ public class HomeChild : MonoBehaviour
     {
         Debug.Log("[HomeChild] Cargando HelpScene...");
         SceneManager.LoadScene("HelpScene");
+    }
+    void GoToLoginScene()
+    {
+        SceneManager.LoadScene("LoginScene");
     }
 }

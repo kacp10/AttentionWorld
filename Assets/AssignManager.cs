@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Collections;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using System.Threading.Tasks;
@@ -74,6 +75,7 @@ public class AssignManager : MonoBehaviour
             }
         };
 
+
         var resp = await db.ScanAsync(req);
         Debug.Log($"▶ Scan DynamoDB salón {selectedClassroom} → {resp.Count} alumno(s)");
 
@@ -89,9 +91,21 @@ public class AssignManager : MonoBehaviour
             meta.playerId = it["PlayerID"].S;
 
             // Al hacer clic en el alumno, lo activamos en AssignUI
-            row.GetComponentInChildren<Button>().onClick.AddListener(
-    () => ui.SetCurrentStudent(meta));
+            row.GetComponentInChildren<Button>().onClick.AddListener(() =>
+            {
+                ui.SetCurrentStudent(meta);
+                feedbackText.text = $"Niño seleccionado: {meta.playerId}";
+                StopAllCoroutines(); // Para resetear el conteo
+                StartCoroutine(ClearFeedbackAfterDelay(3f)); // Limpia después de 3 segundos
+            });
 
+
+        }
+
+        IEnumerator ClearFeedbackAfterDelay(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+            feedbackText.text = "";
         }
     }
 

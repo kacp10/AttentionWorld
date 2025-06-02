@@ -13,14 +13,14 @@ public class AssignUI : MonoBehaviour
 
     public string CurrentStudentId { get; private set; } = "";
     private Transform selectedRow;
-    private string currentCategory = "Attention";
+    private string currentCategory = "Atención";
 
     private readonly Dictionary<string, string[]> gamesByCategory = new()
     {
-        { "Attention", new[]{ "BallScene", "StarScene", "MoleScene" } },
-        { "Memory",    new[]{ "PairsScene" } },
-        { "Logic",     new[]{ "PuzzleScene" } },
-        { "Math",      new[]{ "GameSceneMath" } }
+        { "Atención", new[]{ "BallScene", "StarScene", "MoleScene" } },
+        { "Memoria",    new[]{ "PairsScene" } },
+        { "Lógica",     new[]{ "PuzzleScene" } },
+        { "Cálculo",      new[]{ "GameSceneMath" } }
     };
 
     private void Start()
@@ -28,10 +28,10 @@ public class AssignUI : MonoBehaviour
         ShowAttention();
     }
 
-    public void ShowAttention() => ShowAvailable("Attention");
-    public void ShowMemory() => ShowAvailable("Memory");
-    public void ShowLogic() => ShowAvailable("Logic");
-    public void ShowMath() => ShowAvailable("Math");
+    public void ShowAttention() => ShowAvailable("Atención");
+    public void ShowMemory() => ShowAvailable("Memoria");
+    public void ShowLogic() => ShowAvailable("Lógica");
+    public void ShowMath() => ShowAvailable("Cálculo");
 
     private void ShowAvailable(string category)
     {

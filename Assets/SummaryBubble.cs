@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.CognitoIdentity;
+using UnityEngine.SceneManagement;
 
 public class SummaryBubble : MonoBehaviour
 {
@@ -19,6 +21,9 @@ public class SummaryBubble : MonoBehaviour
     public TMP_Text txtBestAttention;
     public TMP_Text txtBestLogic;
     public TMP_Text txtBestCalc;
+    [Header("Botón Back")]
+    public Button backButton;
+
 
     /* AWS */
     AmazonDynamoDBClient db;
@@ -26,6 +31,11 @@ public class SummaryBubble : MonoBehaviour
 
     async void Start()
     {
+        if (backButton != null)
+            backButton.onClick.AddListener(OnBackButtonClicked);
+        else
+            Debug.LogWarning("Back Button no asignado en el inspector");
+
         playerId = UserSession.Instance != null
          ? UserSession.Instance.GetCurrentPlayerId()
          : "unknown";
@@ -59,6 +69,10 @@ public class SummaryBubble : MonoBehaviour
         SetAreaTop(txtBestAttention, records, "atencion", "Atención");
         SetAreaTop(txtBestLogic, records, "logica", "Lógica");
         SetAreaTop(txtBestCalc, records, "calculo", "Cálculo");
+    }
+    void OnBackButtonClicked()
+    {
+        SceneManager.LoadScene("ProgressScene");
     }
 
     /* ---------- helpers ---------- */

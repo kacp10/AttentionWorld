@@ -6,7 +6,9 @@ using TMPro;
 public class HomeParentsSceneManager : MonoBehaviour
 {
     [SerializeField] private UnityEngine.UI.Button settingButtonParents;
-    [SerializeField] private UnityEngine.UI.Button profileButtonParents;  // Added the missing semicolon here
+    [SerializeField] private UnityEngine.UI.Button profileButtonParents;
+    [SerializeField] private UnityEngine.UI.Button helpButtonParents;
+    [SerializeField] private UnityEngine.UI.Button logoutButtonParents;
 
     void Start()
     {
@@ -20,6 +22,14 @@ public class HomeParentsSceneManager : MonoBehaviour
         profileButtonParents.onClick.AddListener(() =>
         {
             SceneManager.LoadScene("ProfileManagerParents");
+        });
+        helpButtonParents.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene("helpScene");
+        });
+        logoutButtonParents.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene("LoginScene");
         });
     }
 }

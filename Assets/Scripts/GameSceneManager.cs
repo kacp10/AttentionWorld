@@ -40,6 +40,6 @@ public class GameSceneManager : MonoBehaviour
             singleExerciseButton.onClick.AddListener(() => SceneManager.LoadScene("SingleExerciseScene"));
 
         if (backButton != null)
-            backButton.onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
+            backButton.onClick.AddListener(() => SceneManager.LoadScene("HomeChildScene"));
     }
 }

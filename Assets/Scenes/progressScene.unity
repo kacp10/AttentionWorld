@@ -1380,6 +1380,7 @@ MonoBehaviour:
   goToGraficButton: {fileID: 192173413}
   goToClasificationButton: {fileID: 1404449420}
   goToRegisterButton: {fileID: 2109665818}
+  backButton: {fileID: 554478675}
 --- !u!1 &1359087544
 GameObject:
   m_ObjectHideFlags: 0

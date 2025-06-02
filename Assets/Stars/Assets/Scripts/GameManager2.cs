@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 
 public class GameManager2 : MonoBehaviour
 {
@@ -12,9 +11,8 @@ public class GameManager2 : MonoBehaviour
     public TMP_Text resultText;
 
     public TMP_InputField answerInput;
-    public Button confirmButton;
 
-    private float roundTime = 30f;
+    private float roundTime = 60f;
     private float currentTime;
 
     private int correctCount = 0;
@@ -29,7 +27,7 @@ public class GameManager2 : MonoBehaviour
 
     void Start()
     {
-        confirmButton.onClick.AddListener(CheckAnswer);
+        answerInput.onSubmit.AddListener(OnSubmitAnswer); // ✅ Detecta Enter
         StartGame();
     }
 
@@ -46,6 +44,11 @@ public class GameManager2 : MonoBehaviour
         }
     }
 
+    void OnSubmitAnswer(string input)
+    {
+        CheckAnswer();
+    }
+
     void StartGame()
     {
         currentTime = roundTime;
@@ -60,12 +63,13 @@ public class GameManager2 : MonoBehaviour
     void EndGame()
     {
         gameActive = false;
-        resultText.text = $"¡Juego terminado!\n✅ {correctCount}  ❌ {wrongCount}";
+        resultText.text = $"¡Juego terminado!\n Bien {correctCount} Mal {wrongCount}";
     }
 
     void NextConstellation()
     {
         answerInput.text = "";
+        answerInput.ActivateInputField(); // vuelve a enfocar el input automáticamente
         ConstellationGenerator.Instance.GenerateRandom();
     }
 
@@ -90,10 +94,9 @@ public class GameManager2 : MonoBehaviour
         NextConstellation();
     }
 
-
     void UpdateUI()
     {
-        correctText.text = "✅ " + correctCount;
-        wrongText.text = "❌ " + wrongCount;
+        correctText.text = "Bien " + correctCount;
+        wrongText.text = "Mal " + wrongCount;
     }
 }

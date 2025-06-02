@@ -2942,7 +2942,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.826229}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -258.15, y: 221.24008}
+  m_AnchoredPosition: {x: -258.15002, y: 221.24008}
   m_SizeDelta: {x: 197.71, y: 35.52}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &980855211
@@ -6509,6 +6509,7 @@ MonoBehaviour:
   childDropdown: {fileID: 1840451294}
   registerButton: {fileID: 674907552}
   feedbackText: {fileID: 980855211}
+  loginButton: {fileID: 701787395}
   childButton: {fileID: 1647293622}
   parentsButton: {fileID: 1629603812}
   teacherButton: {fileID: 1894255001}

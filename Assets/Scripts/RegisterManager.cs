@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using TMPro;
 using System.Threading.Tasks;
 using System.Linq;  // Asegúrate de incluir esta línea para usar métodos LINQ
@@ -18,7 +19,7 @@ public class RegisterManager : MonoBehaviour
     public TMP_Dropdown childDropdown;  // Dropdown para que el padre seleccione al niño (solo si es padre)
     public Button registerButton;  // Botón de registro
     public TMP_Text feedbackText;  // Texto para mostrar los mensajes de feedback
-
+    public Button loginButton;
     // Botones para seleccionar rol
     public Button childButton;  // Botón para seleccionar el rol de Child
     public Button parentsButton;  // Botón para seleccionar el rol de Parents
@@ -40,6 +41,7 @@ public class RegisterManager : MonoBehaviour
 
         // Asignar el evento de clic al botón de registro
         registerButton.onClick.AddListener(async () => await HandleRegister());
+        loginButton.onClick.AddListener(() => SceneManager.LoadScene("LoginScene"));
 
         // Cargar los dropdowns de niños y salones al inicio
         LoadChildDropdown();
