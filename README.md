@@ -50,7 +50,7 @@ Cada minijuego tiene 5 rondas progresivas y mide resultados que luego se almacen
 ---
 
 📊 Estructura de Base de Datos
-El sistema utiliza AWS DynamoDB como base de datos NoSQL, con tres tablas principales:
+Este sistema utiliza AWS DynamoDB como base de datos NoSQL. A continuación se describen las tres tablas principales que lo conforman:
 
 🧍‍♂️ Tabla: PlayerData
 Contiene la información de cada usuario registrado en el sistema.
@@ -59,33 +59,33 @@ Campo	Tipo	Descripción
 PlayerID	Cadena	ID único del jugador (clave primaria)
 Name	Cadena	Nombre del usuario
 Role	Cadena	Rol del usuario: Child, Parents, Teacher
-Classroom	Cadena	Salón asignado (solo niños y profesores)
+Classroom	Cadena	Salón asignado (niños y profesores)
 Email	Cadena	Correo del usuario
-ParentID	Cadena	ID del hijo (solo para rol Parents)
-YearOfBirth	Cadena	Año de nacimiento (niños)
+ParentID	Cadena	ID del hijo (solo si el usuario es padre)
+YearOfBirth	Cadena	Año de nacimiento (solo si el usuario es niño)
 
 🎮 Tabla: GameResults
-Registra los resultados de los minijuegos por jugador y día.
+Registra los resultados obtenidos en los minijuegos.
 
 Campo	Tipo	Descripción
-PlayerID	Cadena	ID del jugador
+PlayerID	Cadena	ID del jugador que realizó el juego
 GameStamp	Cadena	Formato: YYYY-MM-DD#IDX o YYYY-MM-DD#SUMMARY
 PlayDate	Cadena	Fecha del juego (YYYY-MM-DD)
-GameName	Cadena	Nombre del minijuego
-CognitiveArea	Cadena	Área evaluada (atención, memoria, etc.)
-Score	Número	Puntaje obtenido
-CorrectCount	Número	Número de aciertos (si aplica)
-IncorrectCount	Número	Número de errores (si aplica)
-ItemType	Cadena	SingleGame o DailySummary
+GameName	Cadena	Nombre del minijuego jugado
+CognitiveArea	Cadena	Área cognitiva evaluada: atención, memoria, lógica o cálculo
+Score	Número	Puntaje total obtenido en el juego
+CorrectCount	Número	Número de respuestas correctas (si aplica)
+IncorrectCount	Número	Número de respuestas incorrectas (si aplica)
+ItemType	Cadena	SingleGame o DailySummary, según el tipo de registro
 
 📅 Tabla: DailyAssignments
-Registra los juegos asignados por el profesor a cada niño por día.
+Define qué juegos debe realizar cada niño, asignados por el profesor para una fecha determinada.
 
 Campo	Tipo	Descripción
 PlayerID	Cadena	ID del niño que recibió los juegos
 Date	Cadena	Fecha de la asignación (YYYY-MM-DD)
 Classroom	Cadena	Salón del jugador asignado
-Games	Conjunto de cadenas	Lista de escenas/juegos asignados
+Games	Conjunto de cadenas	Lista de escenas/juegos asignados (ej: "GameSceneMath")
 TeacherID	Cadena	ID del profesor que hizo la asignación
 
 ---
