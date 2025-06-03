@@ -49,17 +49,44 @@ Cada minijuego tiene 5 rondas progresivas y mide resultados que luego se almacen
 
 ---
 
-## 📊 Estructura de Base de Datos
+📊 Estructura de Base de Datos
+El sistema utiliza AWS DynamoDB como base de datos NoSQL, con tres tablas principales:
 
-### Tabla: `PlayerData`
-- `PlayerID`: ID del jugador
-- `Name`, `Role`, `Classroom`, `Email`, `ParentID`, `YearOfBirth`
+🧍‍♂️ Tabla: PlayerData
+Contiene la información de cada usuario registrado en el sistema.
 
-### Tabla: `GameResults`
-- `PlayerID`
-- `GameStamp`, `PlayDate`, `GameName`, `CognitiveArea`
-- `Score`, `CorrectCount`, `IncorrectCount`
-- `ItemType`: `SingleGame` o `DailySummary`
+Campo	Tipo	Descripción
+PlayerID	Cadena	ID único del jugador (clave primaria)
+Name	Cadena	Nombre del usuario
+Role	Cadena	Rol del usuario: Child, Parents, Teacher
+Classroom	Cadena	Salón asignado (solo niños y profesores)
+Email	Cadena	Correo del usuario
+ParentID	Cadena	ID del hijo (solo para rol Parents)
+YearOfBirth	Cadena	Año de nacimiento (niños)
+
+🎮 Tabla: GameResults
+Registra los resultados de los minijuegos por jugador y día.
+
+Campo	Tipo	Descripción
+PlayerID	Cadena	ID del jugador
+GameStamp	Cadena	Formato: YYYY-MM-DD#IDX o YYYY-MM-DD#SUMMARY
+PlayDate	Cadena	Fecha del juego (YYYY-MM-DD)
+GameName	Cadena	Nombre del minijuego
+CognitiveArea	Cadena	Área evaluada (atención, memoria, etc.)
+Score	Número	Puntaje obtenido
+CorrectCount	Número	Número de aciertos (si aplica)
+IncorrectCount	Número	Número de errores (si aplica)
+ItemType	Cadena	SingleGame o DailySummary
+
+📅 Tabla: DailyAssignments
+Registra los juegos asignados por el profesor a cada niño por día.
+
+Campo	Tipo	Descripción
+PlayerID	Cadena	ID del niño que recibió los juegos
+Date	Cadena	Fecha de la asignación (YYYY-MM-DD)
+Classroom	Cadena	Salón del jugador asignado
+Games	Conjunto de cadenas	Lista de escenas/juegos asignados
+TeacherID	Cadena	ID del profesor que hizo la asignación
 
 ---
 
