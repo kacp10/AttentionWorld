@@ -213,6 +213,7 @@ Actualmente se encuentran implementadas las siguientes funcionalidades:
 **Kevin Andres Castro**
 
 Correo de contacto: `kacastro15@ucatolica.edu.co`
+Repositorio Universidad Católica de Colombia: https://repository.ucatolica.edu.co/entities/publication/689bf9ad-341a-438e-bd0a-0fbe36018964
 
 ## Licencia
 
