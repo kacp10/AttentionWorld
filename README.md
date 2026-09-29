@@ -1,177 +1,221 @@
-# 🧠 AttentionWorld
+# AttentionWorld
 
-**AttentionWorld** es un videojuego educativo desarrollado en **Unity** que busca fortalecer la atención, memoria, lógica y cálculo en niños con Trastorno por Déficit de Atención (TDAH). El sistema se adapta dinámicamente al rol del usuario (Niño, Padre, Profesor o Administrador), ofreciendo experiencias y reportes personalizados.
+AttentionWorld es un videojuego educativo desarrollado en Unity orientado al fortalecimiento de habilidades cognitivas como la atención, la memoria, la lógica y el cálculo.
 
----
+El proyecto está pensado principalmente para niños con Trastorno por Déficit de Atención e Hiperactividad (TDAH), e incluye diferentes tipos de usuario para facilitar el seguimiento del progreso, la asignación de actividades y la consulta de resultados.
 
-## 🎯 Objetivos del Proyecto
+## Objetivo
 
-- Estimular habilidades cognitivas clave en niños con TDAH.
-- Ofrecer reportes automáticos para padres y docentes.
-- Gamificar el aprendizaje en un entorno accesible y tecnológico.
-- Evaluar rendimiento diario y registrar historial de juego.
+El objetivo principal de AttentionWorld es ofrecer un entorno interactivo y gamificado que permita trabajar diferentes habilidades cognitivas mediante minijuegos.
 
----
+El sistema también busca facilitar el seguimiento del rendimiento mediante el almacenamiento de resultados, reportes de progreso y asignaciones diarias realizadas por profesores.
 
-## 🧩 Minijuegos Incluidos
+## Minijuegos
 
-| Juego                | Área Cognitiva | Descripción                                      |
-|---------------------|----------------|--------------------------------------------------|
-| Pelotas Saltarinas  | Atención       | Identificar cuántas pelotas rebotan.            |
-| Parejas             | Memoria        | Encontrar cartas iguales en el menor tiempo.     |
-| Cálculo Divertido   | Cálculo        | Resolver operaciones matemáticas básicas.        |
-| Rompecabezas        | Lógica         | Completar el puzzle antes de que acabe el tiempo.|
+Actualmente el proyecto incluye cuatro minijuegos principales:
 
-Cada minijuego tiene 5 rondas progresivas. El sistema registra puntajes, aciertos y errores.
+| Juego | Área cognitiva | Descripción |
+| --- | --- | --- |
+| Pelotas Saltarinas | Atención | El jugador debe identificar cuántas pelotas están rebotando. |
+| Parejas | Memoria | Consiste en encontrar pares de cartas iguales en el menor tiempo posible. |
+| Cálculo Divertido | Cálculo | El jugador debe resolver operaciones matemáticas básicas. |
+| Rompecabezas | Lógica | El objetivo es completar un rompecabezas antes de que finalice el tiempo. |
 
----
+Cada minijuego contiene cinco rondas progresivas. Durante la ejecución se registran datos como puntaje, aciertos y errores.
 
-## 🧑‍🏫 Roles del Sistema
+## Roles del sistema
 
-- 👶 **Niños**: Juegan minijuegos asignados o libres, y su rendimiento se guarda automáticamente.
-- 👨‍👩‍👧 **Padres**: Visualizan el historial y progreso de sus hijos.
-- 👩‍🏫 **Profesores**: Asignan juegos diarios, gestionan salones y revisan progreso de estudiantes.
-- 🧑‍💼 **Administrador**: Accede a un panel con estadísticas generales (usuarios, juegos, promedios, etc).
+AttentionWorld maneja diferentes roles de usuario:
 
----
+### Niño
 
-## 💾 Tecnologías Usadas
+Puede acceder a los minijuegos disponibles, completar actividades asignadas y generar resultados que se almacenan automáticamente.
 
-- 🎮 Unity 2021.3.x
-- ☁️ AWS DynamoDB (NoSQL)
-- 🔐 AWS Cognito (autenticación)
-- 📊 Unity XCharts (gráficos)
-- 💻 C# (backend y lógica de negocio)
+### Padre
 
----
+Puede consultar el historial y el progreso asociado a su hijo.
 
-## 📊 Estructura de Base de Datos
+### Profesor
 
-El sistema utiliza **3 tablas principales** en AWS DynamoDB:
+Puede administrar salones, asignar juegos diarios y revisar el rendimiento de los estudiantes.
 
-### 🧍‍♂️ Tabla: `PlayerData`
+### Administrador
 
-Contiene los datos de registro de todos los usuarios.
+Tiene acceso a un panel general con estadísticas del sistema, incluyendo cantidad de usuarios, juegos registrados y promedios generales.
 
-| Campo        | Tipo     | Descripción                                                    |
-|--------------|----------|----------------------------------------------------------------|
-| `PlayerID`   | Cadena   | ID único del jugador (clave primaria)                          |
-| `Name`       | Cadena   | Nombre completo del usuario                                    |
-| `Role`       | Cadena   | Rol: `Child`, `Parents`, `Teacher`                             |
-| `Classroom`  | Cadena   | Salón asignado (solo niños y profesores)                       |
-| `Email`      | Cadena   | Correo electrónico del usuario                                 |
-| `ParentID`   | Cadena   | ID del hijo (solo si el usuario es `Parent`)                   |
-| `YearOfBirth`| Cadena   | Año de nacimiento (solo niños)                                 |
+## Tecnologías utilizadas
 
----
+El proyecto utiliza las siguientes tecnologías:
 
-### 🎮 Tabla: `GameResults`
+- Unity 2021.3.x
+- C#
+- AWS DynamoDB
+- AWS Cognito
+- Unity XCharts
 
-Registra resultados por minijuego y día.
+Unity se utiliza como motor principal del videojuego, mientras que C# contiene la lógica de negocio y comportamiento de las escenas.
 
-| Campo           | Tipo     | Descripción                                                      |
-|-----------------|----------|------------------------------------------------------------------|
-| `PlayerID`      | Cadena   | ID del jugador                                                   |
-| `GameStamp`     | Cadena   | Formato `YYYY-MM-DD#IDX` o `YYYY-MM-DD#SUMMARY`                 |
-| `PlayDate`      | Cadena   | Fecha del juego (`YYYY-MM-DD`)                                  |
-| `GameName`      | Cadena   | Nombre del minijuego                                             |
-| `CognitiveArea` | Cadena   | Área evaluada: atención, memoria, cálculo o lógica              |
-| `Score`         | Número   | Puntaje obtenido                                                 |
-| `CorrectCount`  | Número   | Aciertos (si aplica)                                             |
-| `IncorrectCount`| Número   | Errores (si aplica)                                              |
-| `ItemType`      | Cadena   | `SingleGame` o `DailySummary`                                   |
+AWS Cognito gestiona la autenticación de usuarios y DynamoDB almacena información de perfiles, resultados y asignaciones.
 
----
+## Base de datos
 
-### 📅 Tabla: `DailyAssignments`
+La persistencia del sistema se organiza principalmente en tres tablas de DynamoDB.
 
-Define qué juegos debe completar cada niño por día.
+### PlayerData
 
-| Campo        | Tipo                  | Descripción                                                  |
-|--------------|------------------------|--------------------------------------------------------------|
-| `PlayerID`   | Cadena                | ID del niño asignado                                         |
-| `Date`       | Cadena                | Fecha de la asignación (`YYYY-MM-DD`)                        |
-| `Classroom`  | Cadena                | Salón del estudiante                                         |
-| `Games`      | Conjunto de cadenas   | Juegos asignados (ej: `"GameSceneMath", "PuzzleScene"`)     |
-| `TeacherID`  | Cadena                | ID del profesor que hizo la asignación                       |
+Almacena la información de registro de los usuarios.
 
----
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `PlayerID` | String | Identificador único del usuario. |
+| `Name` | String | Nombre completo. |
+| `Role` | String | Rol del usuario: `Child`, `Parents` o `Teacher`. |
+| `Classroom` | String | Salón asignado para niños y profesores. |
+| `Email` | String | Correo electrónico. |
+| `ParentID` | String | Identificador utilizado para relacionar un padre con el niño correspondiente. |
+| `YearOfBirth` | String | Año de nacimiento del niño. |
 
-## 🧠 Funcionalidades Clave
+### GameResults
 
-- Autenticación por rol (`Child`, `Parents`, `Teacher`, `Admin`)
-- Evaluación automática y persistencia en DynamoDB
-- Dashboard de administración con conteo total de:
-  - Usuarios registrados
-  - Usuarios recientes
-  - Juegos jugados
-  - Promedio diario
-- Visualización de progreso por jugador
-- Asignación de juegos diarios por salón
-- Vista de perfil editable (correo/teléfono)
+Almacena los resultados obtenidos durante las partidas.
 
----
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `PlayerID` | String | Identificador del jugador. |
+| `GameStamp` | String | Identificador con formato `YYYY-MM-DD#IDX` o `YYYY-MM-DD#SUMMARY`. |
+| `PlayDate` | String | Fecha de la partida en formato `YYYY-MM-DD`. |
+| `GameName` | String | Nombre del minijuego. |
+| `CognitiveArea` | String | Área cognitiva evaluada. |
+| `Score` | Number | Puntaje obtenido. |
+| `CorrectCount` | Number | Cantidad de respuestas correctas. |
+| `IncorrectCount` | Number | Cantidad de respuestas incorrectas. |
+| `ItemType` | String | Tipo de registro: `SingleGame` o `DailySummary`. |
 
-## 🧪 Métricas y Evaluación
+### DailyAssignments
 
-- ⏱️ Medición de tiempos de respuesta con `Stopwatch`.
-- 📋 Seguimiento de tareas en pruebas de usabilidad.
-- 🧾 Exportación local de resultados (`LoginTestResults.txt`, `GameProgressTestResults.txt`).
+Almacena las actividades asignadas por los profesores.
 
----
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `PlayerID` | String | Identificador del estudiante. |
+| `Date` | String | Fecha de la asignación. |
+| `Classroom` | String | Salón del estudiante. |
+| `Games` | String Set | Conjunto de juegos asignados. |
+| `TeacherID` | String | Identificador del profesor que realizó la asignación. |
 
-## 📂 Estructura del Proyecto
+Un ejemplo del campo `Games` puede ser:
 
+```text
+GameSceneMath
+PuzzleScene
+```
+
+## Funcionalidades principales
+
+Entre las principales funcionalidades implementadas se encuentran:
+
+- Inicio y cierre de sesión.
+- Autenticación por rol mediante AWS Cognito.
+- Redirección del usuario según su tipo de cuenta.
+- Registro automático de resultados en DynamoDB.
+- Consulta de historial de juego.
+- Seguimiento de puntajes, aciertos y errores.
+- Asignación diaria de minijuegos.
+- Gestión de estudiantes por salón.
+- Visualización de progreso por jugador.
+- Dashboard administrativo con estadísticas generales.
+- Perfil de usuario editable.
+- Registro de métricas utilizadas en pruebas de usabilidad.
+
+## Autenticación y sesión
+
+La autenticación se realiza mediante AWS Cognito.
+
+Una vez que el usuario inicia sesión, la información necesaria se mantiene durante la ejecución mediante `UserSession.cs`.
+
+Dependiendo del rol detectado, el sistema carga la escena correspondiente:
+
+- `Child` → Home del niño.
+- `Parents` → Home del padre.
+- `Teacher` → Home del profesor.
+- `Admin` → Panel administrativo.
+
+## Registro de resultados
+
+Los resultados de cada minijuego son procesados y almacenados en DynamoDB.
+
+El sistema puede registrar información individual de cada juego y también generar resúmenes diarios mediante los tipos:
+
+```text
+SingleGame
+DailySummary
+```
+
+Esto permite consultar tanto resultados específicos como información agregada del rendimiento diario.
+
+## Métricas y pruebas
+
+Durante las pruebas de usabilidad se registran tiempos de respuesta y progreso de determinadas tareas.
+
+Para la medición de tiempo se utiliza `Stopwatch` de C#.
+
+Algunos resultados de prueba pueden almacenarse localmente en archivos como:
+
+```text
+LoginTestResults.txt
+GameProgressTestResults.txt
+```
+
+Estos registros se utilizaron para analizar el comportamiento del sistema durante las pruebas.
+
+## Estructura general del proyecto
+
+```text
 Assets/
 ├── Scenes/
-│ ├── LoginScene
-│ ├── HomeChildScene
-│ ├── HomeParentsScene
-│ ├── HomeTeacherScene
-│ ├── AdminScene
-│ └── MiniGameScenes/
+│   ├── LoginScene
+│   ├── HomeChildScene
+│   ├── HomeParentsScene
+│   ├── HomeTeacherScene
+│   ├── AdminScene
+│   └── MiniGameScenes/
+│
 ├── Scripts/
-│ ├── LoginManager.cs
-│ ├── UserSession.cs
-│ ├── GameSessionData.cs
-│ ├── ResultSceneManager.cs
-│ ├── SummarySceneManager.cs
-│ ├── AdminDashboardManager.cs
-├── Resources/
-│ ├── Sprites/
-│ ├── Icons/
-│ └── Backgrounds/
+│   ├── LoginManager.cs
+│   ├── UserSession.cs
+│   ├── GameSessionData.cs
+│   ├── ResultSceneManager.cs
+│   ├── SummarySceneManager.cs
+│   └── AdminDashboardManager.cs
+│
+└── Resources/
+    ├── Sprites/
+    ├── Icons/
+    └── Backgrounds/
+```
 
-yaml
-Copiar
-Editar
+## Estado del proyecto
 
----
+Actualmente se encuentran implementadas las siguientes funcionalidades:
 
-## 🔐 Autenticación
+- Sistema de autenticación.
+- Gestión de sesión por usuario.
+- Minijuegos funcionales.
+- Evaluación y registro de resultados.
+- Historial de rendimiento.
+- Resumen diario.
+- Dashboard administrativo.
+- Asignación de juegos por salón.
+- Gestión básica de perfiles.
 
-Se gestiona a través de **AWS Cognito**, con persistencia en el objeto `UserSession.cs`. Cada rol es redirigido a su escena correspondiente al iniciar sesión.
+## Autor
 
----
+**Kevin Andres Castro**
 
-## ✅ Estado del Proyecto
+Correo de contacto: `kacastro15@ucatolica.edu.co`
 
-- [x] Sistema de login/logout
-- [x] Minijuegos funcionales y evaluables
-- [x] Registro de resultados por día
-- [x] Dashboard de estadísticas para admin
-- [x] Asignación dinámica de juegos por salón
-- [x] Perfil de usuario editable (simulado)
+## Licencia
 
----
+Este proyecto fue desarrollado con fines académicos y educativos.
 
-## 📩 Contacto
-
-**Desarrollador:** Kevin Andres Castro  
-**Correo:** kacastro15@ucatolica.edu.co
-
----
-
-## ⚠️ Licencia
-
-Este proyecto fue desarrollado con fines **educativos**. No está autorizado para uso comercial sin previa autorización escrita.
+No está autorizado su uso comercial sin autorización previa del autor.
